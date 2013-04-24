@@ -4,7 +4,7 @@
   <title><![CDATA[Ankur Goel]]></title>
   <link href="http://AnkurGel.github.io/atom.xml" rel="self"/>
   <link href="http://AnkurGel.github.io/"/>
-  <updated>2013-04-24T13:15:51+05:30</updated>
+  <updated>2013-04-24T16:07:27+05:30</updated>
   <id>http://AnkurGel.github.io/</id>
   <author>
     <name><![CDATA[Ankur Goel]]></name>
@@ -12,5 +12,37 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[StatSample]]></title>
+    <link href="http://AnkurGel.github.io/blog/2013/04/24/statsample/"/>
+    <updated>2013-04-24T13:51:00+05:30</updated>
+    <id>http://AnkurGel.github.io/blog/2013/04/24/statsample</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/sciruby/statsample">Statsample</a> is a statistical library for Ruby and is actively developed by folks at SciRuby. Currently, Statsample is supported with Ruby 1.8.7, 1.9.1, 1.9.2 and ruby-head.</p>
+
+<p>Statsample is currently makes use of Ruby/GSL which uses NArray for vector and matrix operations. It conflicts with the SciRuby&#8217;s NMatrix which also uses the same class names - NMatrix and NVector. Thus, this conflict makes Statsample unusable for system which already has NMatrix. To aid this, SciRuby developed a fork of <a href="http://github.com/SciRuby/rb-gsl">rb-gsl</a> which makes use of NMatrix instead of NArray. I went through it&#8217;s code structure and found it to be great. Devs did a great job in removing many references of NArray and made use of NMatrix in lieu of that.</p>
+
+<p>Statsample is <a href="https://github.com/SciRuby/sciruby/wiki/Google-Summer-of-Code-2013-Ideas#statsample">purposed idea</a> for <a href="http://google-melange.com">Google Summer of Code 2013</a> program. And, I am excited about making Statsample more flexible by covering various aspects:</p>
+
+<ul>
+<li>Make Statsample compatible for Ruby 1.9.3+</li>
+<li>Enable Statsample to require <a href="http://github.com/SciRuby/rb-gsl">rb-gsl fork</a> instead.</li>
+<li>Add more tests to the code and cover the documentation using existing style of NMatrix.</li>
+<li>Implement modules for Generalized Linear Models(GLM) and Time Series Analysis.</li>
+</ul>
+
+
+<p>I have been playing around with existing codebase by writing few examples and test cases from few days and had <a href="https://groups.google.com/forum/?fromgroups=#!topic/sciruby-dev/SqXJLJnd6Xs">discussion</a> about this with fellow folks at SciRuby (John Woods, Claudio Bustos and Carlos Agarie). I&#8217;m very grateful for their response and persuasion. The discussion with them helped me to clarify many aspects which were a little obscure earlier. :)</p>
+
+<p>Just before writing down this blog-entry, I was trying out <strong>TimeSeries</strong> class and it&#8217;s methods. I simply loved it - the ease with which I was able to compute the operations, I learnt back in Digital Signal processing such as lagging of series, autocorrelation, exponential moving average etc is <em>mindblowing</em>. It currently supports many basic operations, which after the successful execution of this project can definitely be expanded.</p>
+
+<p>I will be delighted to work on Statsample in this summer, if given an opportunity.</p>
+
+<p>Cheers! <br/>
+- Ankur Goel</p>
+
+<p><em>PS</em>: I will try to blog with example codes in next posts.</p>
+]]></content>
+  </entry>
   
 </feed>
