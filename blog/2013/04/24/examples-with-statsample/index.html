@@ -1,24 +1,97 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Ankur Goel]]></title>
-  <link href="http://AnkurGel.github.io/atom.xml" rel="self"/>
-  <link href="http://AnkurGel.github.io/"/>
-  <updated>2013-04-25T16:23:11+05:30</updated>
-  <id>http://AnkurGel.github.io/</id>
-  <author>
-    <name><![CDATA[Ankur Goel]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Examples with Statsample - Ankur Goel</title>
+  <meta name="author" content="Ankur Goel">
 
   
-  <entry>
-    <title type="html"><![CDATA[Examples with Statsample]]></title>
-    <link href="http://AnkurGel.github.io/blog/2013/04/24/examples-with-statsample/"/>
-    <updated>2013-04-24T16:51:00+05:30</updated>
-    <id>http://AnkurGel.github.io/blog/2013/04/24/examples-with-statsample</id>
-    <content type="html"><![CDATA[<h2><u>TimeSeries</u></h2>
+  <meta name="description" content="TimeSeries Statsample has a module for Time Series as Statsample::TimeSeries. This module has a class named TimeSeries which enables users to perform &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://AnkurGel.github.io/blog/2013/04/24/examples-with-statsample">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Ankur Goel" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Ankur Goel</a></h1>
+  
+    <h2>On hunt of awesomeness!</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:AnkurGel.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Examples With Statsample</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-24T16:51:00+05:30" pubdate data-updated="true">Apr 24<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2><u>TimeSeries</u></h2>
 
 <p>Statsample has a module for Time Series as <code>Statsample::TimeSeries</code>. This module has a class named <code>TimeSeries</code> which enables users to perform operations on sequence of data points, indexed by time and ordered from earliest to latest. Example: Stock data.
 Suppose, we have a time series as:</p>
@@ -101,39 +174,137 @@ I covered various tests of SRS methods <a href="https://github.com/AnkurGel/stat
 
 <p>Cheers, <br/>
 -Ankur Goel</p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    <title type="html"><![CDATA[StatSample]]></title>
-    <link href="http://AnkurGel.github.io/blog/2013/04/24/statsample/"/>
-    <updated>2013-04-24T13:51:00+05:30</updated>
-    <id>http://AnkurGel.github.io/blog/2013/04/24/statsample</id>
-    <content type="html"><![CDATA[<p><a href="https://github.com/sciruby/statsample">Statsample</a> is a statistical library for Ruby and is actively developed by folks at SciRuby. Currently, Statsample is supported with Ruby 1.8.7, 1.9.1, 1.9.2 and ruby-head.</p>
 
-<p>Statsample is currently makes use of Ruby/GSL which uses NArray for vector and matrix operations. It conflicts with the SciRuby&#8217;s NMatrix which also uses the same class names - NMatrix and NVector. Thus, this conflict makes Statsample unusable for system which already has NMatrix. To aid this, SciRuby developed a fork of <a href="http://github.com/SciRuby/rb-gsl">rb-gsl</a> which makes use of NMatrix instead of NArray. I went through it&#8217;s code structure and found it to be great. Devs did a great job in removing many references of NArray and made use of NMatrix in lieu of that.</p>
+<span class="byline author vcard">Posted by <span class="fn">Ankur Goel</span></span>
 
-<p>Statsample is <a href="https://github.com/SciRuby/sciruby/wiki/Google-Summer-of-Code-2013-Ideas#statsample">purposed idea</a> for <a href="http://google-melange.com">Google Summer of Code 2013</a> program. And, I am excited about making Statsample more flexible by covering various aspects:</p>
-
-<ul>
-<li>Make Statsample compatible for Ruby 1.9.3+</li>
-<li>Enable Statsample to require <a href="http://github.com/SciRuby/rb-gsl">rb-gsl fork</a> instead.</li>
-<li>Add more tests to the code and cover the documentation using existing style of NMatrix.</li>
-<li>Implement modules for Generalized Linear Models(GLM) and Time Series Analysis.</li>
-</ul>
+      
 
 
-<p>I have been playing around with existing codebase by writing few examples and test cases from few days and had <a href="https://groups.google.com/forum/?fromgroups=#!topic/sciruby-dev/SqXJLJnd6Xs">discussion</a> about this with fellow folks at SciRuby (John Woods, Claudio Bustos and Carlos Agarie). I&#8217;m very grateful for their response and persuasion. The discussion with them helped me to clarify many aspects which were a little obscure earlier. :)</p>
 
-<p>Just before writing down this blog-entry, I was trying out <strong>TimeSeries</strong> class and it&#8217;s methods. I simply loved it - the ease with which I was able to compute the operations, I learnt back in Digital Signal processing such as lagging of series, autocorrelation, exponential moving average etc is <em>mindblowing</em>. It currently supports many basic operations, which after the successful execution of this project can definitely be expanded.</p>
 
-<p>I will be delighted to work on Statsample in this summer, if given an opportunity.</p>
 
-<p>Cheers! <br/>
-- Ankur Goel</p>
 
-<p><em>PS</em>: I will try to blog with example codes in next posts.</p>
-]]></content>
-  </entry>
+
+
   
-</feed>
+
+
+<time datetime="2013-04-24T16:51:00+05:30" pubdate data-updated="true">Apr 24<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://AnkurGel.github.io/blog/2013/04/24/examples-with-statsample/" data-via="ankurgel" data-counturl="http://AnkurGel.github.io/blog/2013/04/24/examples-with-statsample/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/04/24/statsample/" title="Previous Post: StatSample">&laquo; StatSample</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/24/examples-with-statsample/">Examples with Statsample</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/24/statsample/">StatSample</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/ankurgel">@ankurgel</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'ankurgel',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Ankur Goel -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
