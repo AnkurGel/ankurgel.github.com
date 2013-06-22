@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Ankur Goel</title>
+  <title>StatSample | Code Begins - Ankur Goel</title>
   <meta name="author" content="Ankur Goel">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://AnkurGel.github.io">
+  <link rel="canonical" href="http://AnkurGel.github.io/blog/2013/06/22/statsample-code-begins">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Ankur Goel" type="application/atom+xml">
@@ -63,15 +63,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/06/22/statsample-code-begins/">StatSample | Code Begins</a></h1>
+      <h1 class="entry-title">StatSample | Code Begins</h1>
     
     
       <p class="meta">
@@ -94,7 +91,7 @@
   </header>
 
 
-  <div class="entry-content"><p>Hi everyone!</p>
+<div class="entry-content"><p>Hi everyone!</p>
 
 <p>This summer, I am working with Ruby Science Foundation for StatSample project. As you must have read in <a href="http://ankurgoel.com/blog/archives/">previous blog posts</a>; StatSample is a powerful statistical library in <strong>Ruby</strong>. Unfortunately, development of this great utility has been on hold from last 2 years. My project aims to revamp StatSample and primarily to enhance functionality for TimeSeries and Generalized Linear Models.</p>
 
@@ -178,140 +175,16 @@ Beside this, I honestly didn&#8217;t get much time to devote to project during t
 <p>Cheers! <br/>
 -Ankur Goel</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/04/24/examples-with-statsample/">Examples With Statsample</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">Ankur Goel</span></span>
 
-<time datetime="2013-04-24T16:51:00+05:30" pubdate data-updated="true">Apr 24<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2><u>TimeSeries</u></h2>
-
-<p>Statsample has a module for Time Series as <code>Statsample::TimeSeries</code>. This module has a class named <code>TimeSeries</code> which enables users to perform operations on sequence of data points, indexed by time and ordered from earliest to latest. Example: Stock data.
-Suppose, we have a time series as:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">rand</span> <span class="mi">100</span> <span class="p">}</span><span class="o">.</span><span class="n">to_ts</span>
-</span><span class='line'><span class="c1">#=&gt; Time Series(type:scale, n:10)[62,91,92,71,86,99,80,64,15,94]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is the returned TimeSeries object which is now capable of performing several interesting operations such as:</p>
-
-<h3>Lag</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">lag</span>
-</span><span class='line'><span class="c1">#=&gt; Vector(type:scale, n:10)[nil,62,91,92,71,86,99,80,64,15]</span>
-</span><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</span><span class='line'><span class="c1">#Lag of series by three units, will place nil in first three positions.</span>
-</span><span class='line'><span class="c1">#=&gt; Vector(type:scale, n:10)[nil,nil,nil,62,91,92,71,86,99,80]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Auto-Correlation</h3>
-
-<p>This is frequently used statistical operation. In Digital signal processing, autocorrelation of series is the cross-correlation of signal with itself, but without the normalization. Though, in statistics, normalization exists.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">acf</span>
-</span><span class='line'><span class="c1">#=&gt; Returns the auto-correlation of series.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Diff</h3>
-
-<p><code>diff</code> performs the first difference of the series. That is difference of series with itself and it&#8217;s first lag.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">diff</span>
-</span><span class='line'><span class="c1">#=&gt; Time Series(type:scale, n:10)[nil,29,1,-21,15,13,-19,-16,-49,79]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Exponential moving average</h3>
-
-<p>Moving average is a finite impulse response filter which creates a series of averages of subsets of full-data to analyze the given set of data points. <br/>
-<a href="http://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average">EMA</a> is similar to moving average, but more weight is given to latest data. <br/>
-<img src="http://user42.tuxfamily.org/chart/manual/chart-ema-weights.png" alt="image_ema" /> <br/>
-In StatSample, EMA can be accessed from <code>TimeSeries</code> by calling <code>ema</code> on a timeseries. Example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">t_series</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">rand</span> <span class="p">}</span><span class="o">.</span><span class="n">to_timeseries</span>
-</span><span class='line'><span class="n">t_series</span><span class="o">.</span><span class="n">ema</span>
-</span><span class='line'><span class="n">t_series</span><span class="o">.</span><span class="n">ema</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="kp">true</span><span class="p">)</span>
-</span><span class='line'><span class="c1">#=&gt; uses 15 observations and sets Welles wilder coefficient to true.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>acf</code> takes optional parameters - n(default: 10) that accounts on how many observations to consider and Welles Wilder coefficent(default: zero) which uses smoothing value of <code>2/(n + 1)</code> on false and <code>1/n</code> on true.</p>
-
-<p><code>TimeSeries</code> module, as can be seen, can become highly sophisticated on inclusion of other methods such as <a href="http://en.wikipedia.org/wiki/Autoregressive%E2%80%93moving-average_model">ARMA Estimation</a> etc.</p>
-
-<h2><u>Simple Random Sampling</u></h2>
-
-<p>SRS is an unbiased technique to choose subset of individuals (sample) from a larger set (called, population). Selection of each individual in that sample is entirely random and has equal probability as other individuals. Various techniques for SRS is <a href="http://stattrek.com/Lesson6/SRS.aspx">given here</a>. <br/>
-<code>SRS</code> is a module in StatSample which comprises of various sections for Proportion estimation, confidence intervals, standard deviation, mean estimation etc. <br/>
-I covered various tests of SRS methods <a href="https://github.com/AnkurGel/statsample/commit/80f7a73be015d2ac7f531fb2125363a6617f0fab">here</a>, as I explored and understood them. I am currently still writing few more tests for this and other modules in StatSample.</p>
-
-<p>I will update the post as soon as I write them. If anyone wishes me to write about the detailed functionality of this module too, please comment. I will be delighted to do that.</p>
-
-<p>Cheers, <br/>
--Ankur Goel</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/04/24/statsample/">StatSample</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -323,50 +196,32 @@ I covered various tests of SRS methods <a href="https://github.com/AnkurGel/stat
   
 
 
-<time datetime="2013-04-24T13:51:00+05:30" pubdate data-updated="true">Apr 24<span>th</span>, 2013</time>
-        
-      </p>
+<time datetime="2013-06-22T09:51:00+05:30" pubdate data-updated="true">Jun 22<span>nd</span>, 2013</time>
+      
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p><a href="https://github.com/sciruby/statsample">Statsample</a> is a statistical library for Ruby and is actively developed by folks at SciRuby. Currently, Statsample is supported with Ruby 1.8.7, 1.9.1, 1.9.2 and ruby-head.</p>
-
-<p>Statsample is currently makes use of Ruby/GSL which uses NArray for vector and matrix operations. It conflicts with the SciRuby&#8217;s NMatrix which also uses the same class names - NMatrix and NVector. Thus, this conflict makes Statsample unusable for system which already has NMatrix. To aid this, SciRuby developed a fork of <a href="http://github.com/SciRuby/rb-gsl">rb-gsl</a> which makes use of NMatrix instead of NArray. I went through it&#8217;s code structure and found it to be great. Devs did a great job in removing many references of NArray and made use of NMatrix in lieu of that.</p>
-
-<p>Statsample is <a href="https://github.com/SciRuby/sciruby/wiki/Google-Summer-of-Code-2013-Ideas#statsample">purposed idea</a> for <a href="http://google-melange.com">Google Summer of Code 2013</a> program. And, I am excited about making Statsample more flexible by covering various aspects:</p>
-
-<ul>
-<li>Make Statsample compatible for Ruby 1.9.3+</li>
-<li>Enable Statsample to require <a href="http://github.com/SciRuby/rb-gsl">rb-gsl fork</a> instead.</li>
-<li>Add more tests to the code and cover the documentation using existing style of NMatrix.</li>
-<li>Implement modules for Generalized Linear Models(GLM) and Time Series Analysis.</li>
-</ul>
-
-
-<p>I have been playing around with existing codebase by writing few examples and test cases from few days and had <a href="https://groups.google.com/forum/?fromgroups=#!topic/sciruby-dev/SqXJLJnd6Xs">discussion</a> about this with fellow folks at SciRuby (John Woods, Claudio Bustos and Carlos Agarie). I&#8217;m very grateful for their response and persuasion. The discussion with them helped me to clarify many aspects which were a little obscure earlier. :)</p>
-
-<p>Just before writing down this blog-entry, I was trying out <strong>TimeSeries</strong> class and it&#8217;s methods. I simply loved it - the ease with which I was able to compute the operations, I learnt back in Digital Signal processing such as lagging of series, autocorrelation, exponential moving average etc is <em>mindblowing</em>. It currently supports many basic operations, which after the successful execution of this project can definitely be expanded.</p>
-
-<p>I will be delighted to work on Statsample in this summer, if given an opportunity.</p>
-
-<p>Cheers! <br/>
-- Ankur Goel</p>
-
-<p><em>PS</em>: I will try to blog with example codes in next posts.</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://AnkurGel.github.io/blog/2013/06/22/statsample-code-begins/" data-via="ankurgel" data-counturl="http://AnkurGel.github.io/blog/2013/06/22/statsample-code-begins/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/04/24/examples-with-statsample/" title="Previous Post: Examples with Statsample">&laquo; Examples with Statsample</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
+
 <aside class="sidebar">
   
     <section>
@@ -391,7 +246,7 @@ I covered various tests of SRS methods <a href="https://github.com/AnkurGel/stat
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/ankurgel">@ankurgel</a> on GitHub
@@ -423,6 +278,7 @@ I covered various tests of SRS methods <a href="https://github.com/AnkurGel/stat
 
   
 </aside>
+
 
     </div>
   </div>

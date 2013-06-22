@@ -4,7 +4,7 @@
   <title><![CDATA[Ankur Goel]]></title>
   <link href="http://AnkurGel.github.io/atom.xml" rel="self"/>
   <link href="http://AnkurGel.github.io/"/>
-  <updated>2013-04-25T16:23:11+05:30</updated>
+  <updated>2013-06-22T10:50:54+05:30</updated>
   <id>http://AnkurGel.github.io/</id>
   <author>
     <name><![CDATA[Ankur Goel]]></name>
@@ -12,6 +12,97 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[StatSample | Code Begins]]></title>
+    <link href="http://AnkurGel.github.io/blog/2013/06/22/statsample-code-begins/"/>
+    <updated>2013-06-22T09:51:00+05:30</updated>
+    <id>http://AnkurGel.github.io/blog/2013/06/22/statsample-code-begins</id>
+    <content type="html"><![CDATA[<p>Hi everyone!</p>
+
+<p>This summer, I am working with Ruby Science Foundation for StatSample project. As you must have read in <a href="http://ankurgoel.com/blog/archives/">previous blog posts</a>; StatSample is a powerful statistical library in <strong>Ruby</strong>. Unfortunately, development of this great utility has been on hold from last 2 years. My project aims to revamp StatSample and primarily to enhance functionality for TimeSeries and Generalized Linear Models.</p>
+
+<p>You can read more about my proposal, <a href="http://www.google-melange.com/gsoc/project/google/gsoc2013/ankurgel/63001">here</a>.</p>
+
+<p>During the community bonding period, I initially studied on few topics which my project is concerned about - primarily, estimation methods like <a href="https://en.wikipedia.org/wiki/Autoregressive_integrated_moving_average">ARIMA</a>. I saw it&#8217;s implementation in alternative statistical applications like R and StatsModels. <a href="http://statsmodels.sourceforge.net/devel/generated/statsmodels.tsa.arima_model.ARIMA.html#statsmodels.tsa.arima_model.ARIMA">StatsModels</a> uses Kalman filter for maximum likelihood and provides other estimations such as <a href="http://en.wikipedia.org/wiki/Likelihood_function#Log-likelihood">log-likelihood</a> and conditional-sum-of-squares etc. The basic interface for ARIMA in StatsModels is as follows:</p>
+
+<figure class='code'><figcaption><span>ARIMA class in StatsModels</span><a href='https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py'>Source code of class</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">ARIMA</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">dates</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</span><span class='line'><span class="c">#series =&gt; list of timeseries values</span>
+</span><span class='line'><span class="c">#order  =&gt; ARIMA order(p=autoregressive, d=differenced, q=moving average)</span>
+</span><span class='line'><span class="c">#dates  =&gt; [optional] timeline</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The returned ARIMA object can be called with :</p>
+
+<ul>
+<li><a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py#L924"><code>fit(...)</code></a> for maximum likelihood with primarily three methods - maximum-likelihood, conditional-sum-of-squares, css-then-mle.</li>
+<li><a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py#L1004"><code>predict(...)</code></a>, it is a recursive function which gives back list of predictedvalues for supplied varying series.</li>
+<li><a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py#L667"><code>loglike_css(...)</code></a> - stands for conditional-sum-of-squares, returns aggregated css value.</li>
+</ul>
+
+
+<p>The R Project too has substantial work in ARIMA. I talked about it on <a href="https://groups.google.com/forum/?fromgroups=#!topic/sciruby-dev/Qc62IG7RMi0">mailing list</a>. Thanks to <a href="https://groups.google.com/d/msg/sciruby-dev/Qc62IG7RMi0/J9AYMi7-V2YJ">John&#8217;s concerns</a>, researching more in StatsModels was good idea than in R. In StatSample, we <em>should</em> work on ARIMA module as idiomatically they have done in <a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py">StatsModels</a>. <br/>
+Beside this, I honestly didn&#8217;t get much time to devote to project during this period because of my then ongoing semester examinations, which I initially brought into notice to my mentors.</p>
+
+<p>Currently, I am working on repairing and brining uniformity in tests. StatSample&#8217;s tests are written in MiniTest <strong>primarily</strong>, and somewhere making use of <code>shoulda</code> DSL. Tests using the latter, are breaking on my system with:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>➜  <span class="nb">test </span>git:<span class="o">(</span>master<span class="o">)</span> ✗ ruby test_anovaoneway.rb
+</span><span class='line'>test_anovaoneway.rb:3:in <span class="sb">`</span>&lt;class:StatsampleAnovaOneWayTestCase&gt;<span class="s1">&#39;: undefined method `context&#39;</span> <span class="k">for </span>StatsampleAnovaOneWayTestCase:Class <span class="o">(</span>NoMethodError<span class="o">)</span>
+</span><span class='line'>  from test_anovaoneway.rb:2:in <span class="sb">`</span>&lt;main&gt;<span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">➜  test git:(master) ✗ ruby test_regression.rb </span>
+</span><span class='line'><span class="s1">test_regression.rb:4:in `&lt;class:StatsampleRegressionTestCase&gt;&#39;</span>: undefined method <span class="sb">`</span>context<span class="s1">&#39; for StatsampleRegressionTestCase:Class (NoMethodError)</span>
+</span><span class='line'><span class="s1">  from test_regression.rb:3:in `&lt;main&gt;&#39;</span>
+</span><span class='line'>➜  <span class="nb">test </span>git:<span class="o">(</span>master<span class="o">)</span> ✗
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To aid this, I am correcting and testing specs as : <a href="https://github.com/AnkurGel/statsample/commit/47ff467f9866798e0917cd75ccb21ad046c3b0d3">commit</a>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>➜  statsample git:<span class="o">(</span>master<span class="o">)</span> ✗ ruby <span class="nb">test</span>/test_regression2.rb
+</span><span class='line'>Run options: --seed 40873
+</span><span class='line'>
+</span><span class='line'><span class="c"># Running tests:</span>
+</span><span class='line'>
+</span><span class='line'>..S......
+</span><span class='line'>
+</span><span class='line'>Finished tests in 0.176938s, 50.8652 tests/s, 740.3708 assertions/s.
+</span><span class='line'>
+</span><span class='line'>9 tests, 131 assertions, 0 failures, 0 errors, 1 skips
+</span><span class='line'>➜  statsample git:<span class="o">(</span>master<span class="o">)</span> ✗
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Hopefully, setting up the codebase in good position will work great as I dwell in coding further with TimeSeries.</p>
+
+<p>Github: <a href="http://github.com/AnkurGel/statsample">http://github.com/AnkurGel/statsample</a></p>
+
+<p>Cheers! <br/>
+-Ankur Goel</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Examples with Statsample]]></title>
