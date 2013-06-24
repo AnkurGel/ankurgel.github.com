@@ -4,7 +4,7 @@
   <title><![CDATA[Ankur Goel]]></title>
   <link href="http://AnkurGel.github.io/atom.xml" rel="self"/>
   <link href="http://AnkurGel.github.io/"/>
-  <updated>2013-06-22T10:50:54+05:30</updated>
+  <updated>2013-06-24T15:01:01+05:30</updated>
   <id>http://AnkurGel.github.io/</id>
   <author>
     <name><![CDATA[Ankur Goel]]></name>
@@ -12,6 +12,51 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[StatSample - Correcting tests and configuration]]></title>
+    <link href="http://AnkurGel.github.io/blog/2013/06/24/statsample-correcting-tests-and-configuration/"/>
+    <updated>2013-06-24T14:39:00+05:30</updated>
+    <id>http://AnkurGel.github.io/blog/2013/06/24/statsample-correcting-tests-and-configuration</id>
+    <content type="html"><![CDATA[<p>In previous blog, I mentioned about the <code>Shoulda</code> issues with MiniTest while running the tests. The error which I encounter looks something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>➜  <span class="nb">test </span>git:<span class="o">(</span>master<span class="o">)</span> ✗ ruby test_anovaoneway.rb
+</span><span class='line'>test_anovaoneway.rb:3:in <span class="sb">`</span>&lt;class:StatsampleAnovaOneWayTestCase&gt;<span class="s1">&#39;: undefined method `context&#39;</span> <span class="k">for </span>StatsampleAnovaOneWayTestCase:Class <span class="o">(</span>NoMethodError<span class="o">)</span>
+</span><span class='line'>  from test_anovaoneway.rb:2:in <span class="sb">`</span>&lt;main&gt;<span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">➜  test git:(master) ✗ ruby test_regression.rb </span>
+</span><span class='line'><span class="s1">test_regression.rb:4:in `&lt;class:StatsampleRegressionTestCase&gt;&#39;</span>: undefined method <span class="sb">`</span>context<span class="s1">&#39; for StatsampleRegressionTestCase:Class (NoMethodError)</span>
+</span><span class='line'><span class="s1">  from test_regression.rb:3:in `&lt;main&gt;&#39;</span>
+</span><span class='line'>➜  <span class="nb">test </span>git:<span class="o">(</span>master<span class="o">)</span> ✗
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>While adding tests for regression, I worked around it by converting them in pure <code>MiniTest</code> references. I just <a href="https://github.com/AnkurGel/statsample/commit/734f3be565090b7168b286fec90a48c07089fdba">committed tests</a> for F following similar analogy. I am currently trying to make Shoulda work which could probably save some work involved in conversion.</p>
+
+<p>For setting up StatSample to make it work on multiple Ruby versions, I have configured <a href="https://rvm.io/"><code>rvm</code></a>(tool to manage multiple ruby environments with their own gemsets) with Ruby <code>1.9.2-p320</code>, <code>1.9.3</code>. I also <a href="https://github.com/AnkurGel/statsample/commit/acc618ef5fd26577e65484024d4086ede4f226d6">committed</a> a clean <code>gemspec</code> for StatSample. I hope to make StatSample compatible for both first, and then fix it for <code>Ruby-1.8.x</code>, as this is usually the workflow which <em>just works</em>.</p>
+
+<p>As always, project can be forked from <a href="http://github.com/AnkurGel/statsample">http://github.com/AnkurGel/statsample</a>.  <br/>
+You can now build it by:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem build statsample.gemspec
+</span><span class='line'>gem install statsample-1.1.0.2013.gem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Do let me know of any trouble you encounter at ankurgel at gmail dot com.</p>
+
+<p>Cheers! <br/>
+-Ankur Goel</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[StatSample | Code Begins]]></title>
