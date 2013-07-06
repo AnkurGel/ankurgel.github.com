@@ -9,7 +9,7 @@
   <meta name="author" content="Ankur Goel">
 
   
-  <meta name="description" content="Statsample is a statistical library for Ruby and is actively developed by folks at SciRuby. Currently, Statsample is supported with Ruby 1.8.7, 1.9.1 &hellip;">
+  <meta name="description" content="Hi everyone! This summer, I am working with Ruby Science Foundation for StatSample project. As you must have read in previous blog posts; StatSample &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,242 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/22/statsample-code-begins/">StatSample | Code Begins</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-22T09:51:00+05:30" pubdate data-updated="true">Jun 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hi everyone!</p>
+
+<p>This summer, I am working with Ruby Science Foundation for StatSample project. As you must have read in <a href="http://ankurgoel.com/blog/archives/">previous blog posts</a>; StatSample is a powerful statistical library in <strong>Ruby</strong>. Unfortunately, development of this great utility has been on hold from last 2 years. My project aims to revamp StatSample and primarily to enhance functionality for TimeSeries and Generalized Linear Models.</p>
+
+<p>You can read more about my proposal, <a href="http://www.google-melange.com/gsoc/project/google/gsoc2013/ankurgel/63001">here</a>.</p>
+
+<p>During the community bonding period, I initially studied on few topics which my project is concerned about - primarily, estimation methods like <a href="https://en.wikipedia.org/wiki/Autoregressive_integrated_moving_average">ARIMA</a>. I saw it&#8217;s implementation in alternative statistical applications like R and StatsModels. <a href="http://statsmodels.sourceforge.net/devel/generated/statsmodels.tsa.arima_model.ARIMA.html#statsmodels.tsa.arima_model.ARIMA">StatsModels</a> uses Kalman filter for maximum likelihood and provides other estimations such as <a href="http://en.wikipedia.org/wiki/Likelihood_function#Log-likelihood">log-likelihood</a> and conditional-sum-of-squares etc. The basic interface for ARIMA in StatsModels is as follows:</p>
+
+<figure class='code'><figcaption><span>ARIMA class in StatsModels</span><a href='https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py'>Source code of class</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">ARIMA</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">dates</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</span><span class='line'><span class="c">#series =&gt; list of timeseries values</span>
+</span><span class='line'><span class="c">#order  =&gt; ARIMA order(p=autoregressive, d=differenced, q=moving average)</span>
+</span><span class='line'><span class="c">#dates  =&gt; [optional] timeline</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The returned ARIMA object can be called with :</p>
+
+<ul>
+<li><a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py#L924"><code>fit(...)</code></a> for maximum likelihood with primarily three methods - maximum-likelihood, conditional-sum-of-squares, css-then-mle.</li>
+<li><a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py#L1004"><code>predict(...)</code></a>, it is a recursive function which gives back list of predictedvalues for supplied varying series.</li>
+<li><a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py#L667"><code>loglike_css(...)</code></a> - stands for conditional-sum-of-squares, returns aggregated css value.</li>
+</ul>
+
+
+<p>The R Project too has substantial work in ARIMA. I talked about it on <a href="https://groups.google.com/forum/?fromgroups=#!topic/sciruby-dev/Qc62IG7RMi0">mailing list</a>. Thanks to <a href="https://groups.google.com/d/msg/sciruby-dev/Qc62IG7RMi0/J9AYMi7-V2YJ">John&#8217;s concerns</a>, researching more in StatsModels was good idea than in R. In StatSample, we <em>should</em> work on ARIMA module as idiomatically they have done in <a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py">StatsModels</a>. <br/>
+Beside this, I honestly didn&#8217;t get much time to devote to project during this period because of my then ongoing semester examinations, which I initially brought into notice to my mentors.</p>
+
+<p>Currently, I am working on repairing and brining uniformity in tests. StatSample&#8217;s tests are written in MiniTest <strong>primarily</strong>, and somewhere making use of <code>shoulda</code> DSL. Tests using the latter, are breaking on my system with:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>➜  <span class="nb">test </span>git:<span class="o">(</span>master<span class="o">)</span> ✗ ruby test_anovaoneway.rb
+</span><span class='line'>test_anovaoneway.rb:3:in <span class="sb">`</span>&lt;class:StatsampleAnovaOneWayTestCase&gt;<span class="s1">&#39;: undefined method `context&#39;</span> <span class="k">for </span>StatsampleAnovaOneWayTestCase:Class <span class="o">(</span>NoMethodError<span class="o">)</span>
+</span><span class='line'>  from test_anovaoneway.rb:2:in <span class="sb">`</span>&lt;main&gt;<span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">➜  test git:(master) ✗ ruby test_regression.rb </span>
+</span><span class='line'><span class="s1">test_regression.rb:4:in `&lt;class:StatsampleRegressionTestCase&gt;&#39;</span>: undefined method <span class="sb">`</span>context<span class="s1">&#39; for StatsampleRegressionTestCase:Class (NoMethodError)</span>
+</span><span class='line'><span class="s1">  from test_regression.rb:3:in `&lt;main&gt;&#39;</span>
+</span><span class='line'>➜  <span class="nb">test </span>git:<span class="o">(</span>master<span class="o">)</span> ✗
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To aid this, I am correcting and testing specs as : <a href="https://github.com/AnkurGel/statsample/commit/47ff467f9866798e0917cd75ccb21ad046c3b0d3">commit</a>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>➜  statsample git:<span class="o">(</span>master<span class="o">)</span> ✗ ruby <span class="nb">test</span>/test_regression2.rb
+</span><span class='line'>Run options: --seed 40873
+</span><span class='line'>
+</span><span class='line'><span class="c"># Running tests:</span>
+</span><span class='line'>
+</span><span class='line'>..S......
+</span><span class='line'>
+</span><span class='line'>Finished tests in 0.176938s, 50.8652 tests/s, 740.3708 assertions/s.
+</span><span class='line'>
+</span><span class='line'>9 tests, 131 assertions, 0 failures, 0 errors, 1 skips
+</span><span class='line'>➜  statsample git:<span class="o">(</span>master<span class="o">)</span> ✗
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Hopefully, setting up the codebase in good position will work great as I dwell in coding further with TimeSeries.</p>
+
+<p>Github: <a href="http://github.com/AnkurGel/statsample">http://github.com/AnkurGel/statsample</a></p>
+
+<p>Cheers! <br/>
+-Ankur Goel</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/24/examples-with-statsample/">Examples With Statsample</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-24T16:51:00+05:30" pubdate data-updated="true">Apr 24<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2><u>TimeSeries</u></h2>
+
+<p>Statsample has a module for Time Series as <code>Statsample::TimeSeries</code>. This module has a class named <code>TimeSeries</code> which enables users to perform operations on sequence of data points, indexed by time and ordered from earliest to latest. Example: Stock data.
+Suppose, we have a time series as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">rand</span> <span class="mi">100</span> <span class="p">}</span><span class="o">.</span><span class="n">to_ts</span>
+</span><span class='line'><span class="c1">#=&gt; Time Series(type:scale, n:10)[62,91,92,71,86,99,80,64,15,94]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is the returned TimeSeries object which is now capable of performing several interesting operations such as:</p>
+
+<h3>Lag</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">lag</span>
+</span><span class='line'><span class="c1">#=&gt; Vector(type:scale, n:10)[nil,62,91,92,71,86,99,80,64,15]</span>
+</span><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span class='line'><span class="c1">#Lag of series by three units, will place nil in first three positions.</span>
+</span><span class='line'><span class="c1">#=&gt; Vector(type:scale, n:10)[nil,nil,nil,62,91,92,71,86,99,80]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Auto-Correlation</h3>
+
+<p>This is frequently used statistical operation. In Digital signal processing, autocorrelation of series is the cross-correlation of signal with itself, but without the normalization. Though, in statistics, normalization exists.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">acf</span>
+</span><span class='line'><span class="c1">#=&gt; Returns the auto-correlation of series.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Diff</h3>
+
+<p><code>diff</code> performs the first difference of the series. That is difference of series with itself and it&#8217;s first lag.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">diff</span>
+</span><span class='line'><span class="c1">#=&gt; Time Series(type:scale, n:10)[nil,29,1,-21,15,13,-19,-16,-49,79]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Exponential moving average</h3>
+
+<p>Moving average is a finite impulse response filter which creates a series of averages of subsets of full-data to analyze the given set of data points. <br/>
+<a href="http://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average">EMA</a> is similar to moving average, but more weight is given to latest data. <br/>
+<img src="http://user42.tuxfamily.org/chart/manual/chart-ema-weights.png" alt="image_ema" /> <br/>
+In StatSample, EMA can be accessed from <code>TimeSeries</code> by calling <code>ema</code> on a timeseries. Example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">t_series</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">rand</span> <span class="p">}</span><span class="o">.</span><span class="n">to_timeseries</span>
+</span><span class='line'><span class="n">t_series</span><span class="o">.</span><span class="n">ema</span>
+</span><span class='line'><span class="n">t_series</span><span class="o">.</span><span class="n">ema</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="c1">#=&gt; uses 15 observations and sets Welles wilder coefficient to true.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>acf</code> takes optional parameters - n(default: 10) that accounts on how many observations to consider and Welles Wilder coefficent(default: zero) which uses smoothing value of <code>2/(n + 1)</code> on false and <code>1/n</code> on true.</p>
+
+<p><code>TimeSeries</code> module, as can be seen, can become highly sophisticated on inclusion of other methods such as <a href="http://en.wikipedia.org/wiki/Autoregressive%E2%80%93moving-average_model">ARMA Estimation</a> etc.</p>
+
+<h2><u>Simple Random Sampling</u></h2>
+
+<p>SRS is an unbiased technique to choose subset of individuals (sample) from a larger set (called, population). Selection of each individual in that sample is entirely random and has equal probability as other individuals. Various techniques for SRS is <a href="http://stattrek.com/Lesson6/SRS.aspx">given here</a>. <br/>
+<code>SRS</code> is a module in StatSample which comprises of various sections for Proportion estimation, confidence intervals, standard deviation, mean estimation etc. <br/>
+I covered various tests of SRS methods <a href="https://github.com/AnkurGel/statsample/commit/80f7a73be015d2ac7f531fb2125363a6617f0fab">here</a>, as I explored and understood them. I am currently still writing few more tests for this and other modules in StatSample.</p>
+
+<p>I will update the post as soon as I write them. If anyone wishes me to write about the detailed functionality of this module too, please comment. I will be delighted to do that.</p>
+
+<p>Cheers, <br/>
+-Ankur Goel</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -140,6 +376,14 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/07/06/statsample-partial-autocorrelation/">Statsample - Partial Autocorrelation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/06/statsample-wald-test/">Statsample - Wald test</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/06/24/statsample-correcting-tests-and-configuration/">StatSample - Correcting tests and configuration</a>
       </li>
     
@@ -149,10 +393,6 @@
     
       <li class="post">
         <a href="/blog/2013/04/24/examples-with-statsample/">Examples with Statsample</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/24/statsample/">StatSample</a>
       </li>
     
   </ul>
