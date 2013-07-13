@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Cuke up with Cucumber - Ankur Goel</title>
+  <meta name="author" content="Ankur Goel">
+
+  
+  <meta name="description" content="Recently, I wrote few features in Cucumber.
+Cucumber is a powerful tool which enables us to write automated tests in functional descriptions. These &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://AnkurGel.github.io/blog/2013/07/11/cuke-up-with-cucumber">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Ankur Goel" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Ankur Goel</a></h1>
+  
+    <h2>On hunt of awesomeness!</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:AnkurGel.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Cuke Up With Cucumber</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-11T22:25:00+05:30" pubdate data-updated="true">Jul 11<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Recently, I wrote few <a href="https://github.com/AnkurGel/statsample/tree/master/features">features</a> in <a href="http://cukes.info/">Cucumber</a>.
+<strong>Cucumber</strong> is a powerful tool which enables us to write automated tests in functional descriptions. These descriptions are as easy to comprehend, as plain English. The purpose of this tool is to perfom BDD(Behavior-Driven-Development).</p>
+
+<p>Consider this small snippet from my <a href="https://github.com/AnkurGel/statsample/blob/master/features/pacf.feature">pacf feature</a>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Feature:</span><span class="nf"> PACF</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">  As a statistician</span>
+</span><span class='line'><span class="nf">  So that I can quickly evaluate partial autocorrelation of a series</span>
+</span><span class='line'><span class="nf">  I want to evaluate pacf</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">Background:</span><span class="nf"> a timeseries</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">  Given </span><span class="nf">the following values in a timeseries:</span>
+</span><span class='line'><span class="k">    |</span><span class="s"> timeseries</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">    |</span><span class="s"> 10  20  30  40  50  60  70  80  90  100</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">    |</span><span class="s"> 110 120 130 140 150 160 170 180 190 200</span><span class="k"> |</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">Scenario:</span><span class="nf"> check pacf for 10 lags with unbiased</span>
+</span><span class='line'><span class="k">  When </span><span class="nf">I provide </span><span class="s">10</span><span class="nf"> lags for pacf</span>
+</span><span class='line'><span class="nf">  </span><span class="k">When </span><span class="nf">I provide yw yule walker as method</span>
+</span><span class='line'><span class="nf">  </span><span class="k">Then </span><span class="nf">I should get Array as resultant output</span>
+</span><span class='line'><span class="nf">  </span><span class="k">Then </span><span class="nf">I should get </span><span class="s">11</span><span class="nf"> values in resultant pacf</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">Scenario:</span><span class="nf"> check pacf for 5 lags with mle</span>
+</span><span class='line'><span class="k">  When </span><span class="nf">I provide </span><span class="s">5</span><span class="nf"> lags for pacf</span>
+</span><span class='line'><span class="nf">  </span><span class="k">When </span><span class="nf">I provide mle yule walker as method</span>
+</span><span class='line'><span class="nf">  </span><span class="k">Then </span><span class="nf">I should get Array as resultant output</span>
+</span><span class='line'><span class="nf">  </span><span class="k">Then </span><span class="nf">I should get </span><span class="s">6</span><span class="nf"> values in resultant pacf</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Yes, these are tests! And they perform the operations as they say.</p>
+
+<ul>
+<li><p><code>Feature</code> denotes the feature this test will cover. It is followed by the description of the feature as:</p>
+
+<ul>
+<li><code>As a</code> statistician -> (use-case)</li>
+<li><code>So that</code> I can quickly evaluate pacf of a seires -> (purpose)</li>
+<li><code>I want</code> to evaluate pacf -> (expected result)</li>
+</ul>
+</li>
+<li><p><code>Given</code> is analogous to <code>before</code> in RSpec. In context of <code>Background</code>, it denotes <code>before all</code>. That is, the forementioned time-series will be available in all scenarios furhter. This timeseries is resolved by <a href="http://rubygems.org/gems/gherkin">Gherkin</a> parser.
+This is further resolved after parsing by following definition:</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Given</span> <span class="sr">/^the following values in a timeseries:$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">series</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">arr</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>  <span class="n">series</span><span class="o">.</span><span class="n">hashes</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">sequence</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">arr</span> <span class="o">+=</span> <span class="n">sequence</span><span class="o">[</span><span class="s1">&#39;timeseries&#39;</span><span class="o">].</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:to_i</span><span class="p">)</span><span class="o">.</span><span class="n">to_ts</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="vi">@timeseries</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">to_ts</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>Scenarios</code> cover the test cases with the combination of <code>When</code>, <code>And</code>, <code>Then</code> keywords.
+They are regular English sentences and combine to form a gramatically sound process.
+These sentences are then captured by regular-expressions written by programmer. For example;</li>
+</ul>
+
+
+<figure class='code'><figcaption><span>Scenario&#8217;s When clause</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="nf">  </span><span class="k">When </span><span class="nf">I provide </span><span class="s">10</span><span class="nf"> lags for pacf</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>Converted DSL</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">When</span> <span class="sr">/^I provide (\d+) lags for p?acf$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">lags</span><span class="o">|</span>
+</span><span class='line'>  <span class="vi">@lags</span> <span class="o">=</span> <span class="n">lags</span><span class="o">.</span><span class="n">to_i</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Above will capture the lags and the strings like:</p>
+
+<ul>
+<li>When I provide 5 lags for pacf</li>
+<li>When I provide 10 lags for acf</li>
+</ul>
+
+
+<p>Result: Compliant for both acf and pacf. :)</p>
+
+<p>You can check my features and step definitions <a href="https://github.com/AnkurGel/statsample/tree/master/features">here</a>.</p>
+
+<p>Cheers<br/>
+Ankur Goel</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Ankur Goel</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-11T22:25:00+05:30" pubdate data-updated="true">Jul 11<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://AnkurGel.github.io/blog/2013/07/11/cuke-up-with-cucumber/" data-via="ankurgel" data-counturl="http://AnkurGel.github.io/blog/2013/07/11/cuke-up-with-cucumber/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/07/06/statsample-partial-autocorrelation/" title="Previous Post: Statsample - Partial Autocorrelation">&laquo; Statsample - Partial Autocorrelation</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/11/cuke-up-with-cucumber/">Cuke up with Cucumber</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/06/statsample-partial-autocorrelation/">Statsample - Partial Autocorrelation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/06/statsample-wald-test/">Statsample - Wald test</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/24/statsample-correcting-tests-and-configuration/">StatSample - Correcting tests and configuration</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/22/statsample-code-begins/">StatSample | Code Begins</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/ankurgel">@ankurgel</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'ankurgel',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Ankur Goel -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

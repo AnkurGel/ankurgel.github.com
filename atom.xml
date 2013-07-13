@@ -4,7 +4,7 @@
   <title><![CDATA[Ankur Goel]]></title>
   <link href="http://AnkurGel.github.io/atom.xml" rel="self"/>
   <link href="http://AnkurGel.github.io/"/>
-  <updated>2013-07-06T22:56:51+05:30</updated>
+  <updated>2013-07-13T13:54:27+05:30</updated>
   <id>http://AnkurGel.github.io/</id>
   <author>
     <name><![CDATA[Ankur Goel]]></name>
@@ -12,6 +12,138 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Cuke up with Cucumber]]></title>
+    <link href="http://AnkurGel.github.io/blog/2013/07/11/cuke-up-with-cucumber/"/>
+    <updated>2013-07-11T22:25:00+05:30</updated>
+    <id>http://AnkurGel.github.io/blog/2013/07/11/cuke-up-with-cucumber</id>
+    <content type="html"><![CDATA[<p>Recently, I wrote few <a href="https://github.com/AnkurGel/statsample/tree/master/features">features</a> in <a href="http://cukes.info/">Cucumber</a>.
+<strong>Cucumber</strong> is a powerful tool which enables us to write automated tests in functional descriptions. These descriptions are as easy to comprehend, as plain English. The purpose of this tool is to perfom BDD(Behavior-Driven-Development).</p>
+
+<p>Consider this small snippet from my <a href="https://github.com/AnkurGel/statsample/blob/master/features/pacf.feature">pacf feature</a>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Feature:</span><span class="nf"> PACF</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">  As a statistician</span>
+</span><span class='line'><span class="nf">  So that I can quickly evaluate partial autocorrelation of a series</span>
+</span><span class='line'><span class="nf">  I want to evaluate pacf</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">Background:</span><span class="nf"> a timeseries</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">  Given </span><span class="nf">the following values in a timeseries:</span>
+</span><span class='line'><span class="k">    |</span><span class="s"> timeseries</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">    |</span><span class="s"> 10  20  30  40  50  60  70  80  90  100</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">    |</span><span class="s"> 110 120 130 140 150 160 170 180 190 200</span><span class="k"> |</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">Scenario:</span><span class="nf"> check pacf for 10 lags with unbiased</span>
+</span><span class='line'><span class="k">  When </span><span class="nf">I provide </span><span class="s">10</span><span class="nf"> lags for pacf</span>
+</span><span class='line'><span class="nf">  </span><span class="k">When </span><span class="nf">I provide yw yule walker as method</span>
+</span><span class='line'><span class="nf">  </span><span class="k">Then </span><span class="nf">I should get Array as resultant output</span>
+</span><span class='line'><span class="nf">  </span><span class="k">Then </span><span class="nf">I should get </span><span class="s">11</span><span class="nf"> values in resultant pacf</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">Scenario:</span><span class="nf"> check pacf for 5 lags with mle</span>
+</span><span class='line'><span class="k">  When </span><span class="nf">I provide </span><span class="s">5</span><span class="nf"> lags for pacf</span>
+</span><span class='line'><span class="nf">  </span><span class="k">When </span><span class="nf">I provide mle yule walker as method</span>
+</span><span class='line'><span class="nf">  </span><span class="k">Then </span><span class="nf">I should get Array as resultant output</span>
+</span><span class='line'><span class="nf">  </span><span class="k">Then </span><span class="nf">I should get </span><span class="s">6</span><span class="nf"> values in resultant pacf</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Yes, these are tests! And they perform the operations as they say.</p>
+
+<ul>
+<li><p><code>Feature</code> denotes the feature this test will cover. It is followed by the description of the feature as:</p>
+
+<ul>
+<li><code>As a</code> statistician -> (use-case)</li>
+<li><code>So that</code> I can quickly evaluate pacf of a seires -> (purpose)</li>
+<li><code>I want</code> to evaluate pacf -> (expected result)</li>
+</ul>
+</li>
+<li><p><code>Given</code> is analogous to <code>before</code> in RSpec. In context of <code>Background</code>, it denotes <code>before all</code>. That is, the forementioned time-series will be available in all scenarios furhter. This timeseries is resolved by <a href="http://rubygems.org/gems/gherkin">Gherkin</a> parser.
+This is further resolved after parsing by following definition:</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Given</span> <span class="sr">/^the following values in a timeseries:$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">series</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">arr</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>  <span class="n">series</span><span class="o">.</span><span class="n">hashes</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">sequence</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">arr</span> <span class="o">+=</span> <span class="n">sequence</span><span class="o">[</span><span class="s1">&#39;timeseries&#39;</span><span class="o">].</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:to_i</span><span class="p">)</span><span class="o">.</span><span class="n">to_ts</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="vi">@timeseries</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">to_ts</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>Scenarios</code> cover the test cases with the combination of <code>When</code>, <code>And</code>, <code>Then</code> keywords.
+They are regular English sentences and combine to form a gramatically sound process.
+These sentences are then captured by regular-expressions written by programmer. For example;</li>
+</ul>
+
+
+<figure class='code'><figcaption><span>Scenario&#8217;s When clause</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="nf">  </span><span class="k">When </span><span class="nf">I provide </span><span class="s">10</span><span class="nf"> lags for pacf</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>Converted DSL</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">When</span> <span class="sr">/^I provide (\d+) lags for p?acf$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">lags</span><span class="o">|</span>
+</span><span class='line'>  <span class="vi">@lags</span> <span class="o">=</span> <span class="n">lags</span><span class="o">.</span><span class="n">to_i</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Above will capture the lags and the strings like:</p>
+
+<ul>
+<li>When I provide 5 lags for pacf</li>
+<li>When I provide 10 lags for acf</li>
+</ul>
+
+
+<p>Result: Compliant for both acf and pacf. :)</p>
+
+<p>You can check my features and step definitions <a href="https://github.com/AnkurGel/statsample/tree/master/features">here</a>.</p>
+
+<p>Cheers<br/>
+Ankur Goel</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Statsample - Partial Autocorrelation]]></title>
