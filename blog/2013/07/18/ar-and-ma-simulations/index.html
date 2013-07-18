@@ -1,0 +1,337 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>AR and MA simulations - Ankur Goel</title>
+  <meta name="author" content="Ankur Goel">
+
+  
+  <meta name="description" content="I have been reading and coding AR(Autoregressive Model) and Moving Average(MA) basics. First, I am very grateful for all the patience by Claudio &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://AnkurGel.github.io/blog/2013/07/18/ar-and-ma-simulations">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Ankur Goel" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Ankur Goel</a></h1>
+  
+    <h2>On hunt of awesomeness!</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:AnkurGel.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">AR and MA Simulations</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-18T18:56:00+05:30" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I have been reading and coding <strong>AR(Autoregressive Model)</strong> and <strong>Moving Average(MA)</strong> basics. <br/>
+First, I am very grateful for all the patience by Claudio Bustos to help me with understanding this. There is still lot to be learnt in these models, but I will keep bugging him. :D</p>
+
+<p>We wrote the simulations for <code>AR(p)</code> and <code>MA(q)</code>. The idea behind creating them is to first simulate the process with known coefficients and then move on to write ARMA process which could also estimate the coefficients.</p>
+
+<h2>Autoregressive Model</h2>
+
+<p>This model is represented by <strong>AR(p)</strong> where p is the order of this model. For a pure autoregressive model, we consider order of moving average model as 0.</p>
+
+<p><code>AR(p)</code> is represented by the following equation:</p>
+
+<p><img src="http://upload.wikimedia.org/math/f/0/6/f06ba0e2d8668944406852d7f72ac2f1.png" alt="Courtesy: Wikipedia" /></p>
+
+<p>Here, <img src="http://upload.wikimedia.org/math/a/3/4/a34ff7b33cb6b9dee064215437f52349.png" alt="" /> are the parameters of model, and <img src="http://upload.wikimedia.org/math/1/5/8/158300cdcfab79e14b49519a9c907ab9.png" alt="" /> is the error noise. <br/>
+To realize this model, we have to observe and keep track of previous <code>x(t)</code> values, and realize current value with observed summation and error noise.</p>
+
+<h4>Here is that code fragment of general AR(p) simulator:</h4>
+
+<ul>
+<li>It creates a buffer initially to prevent &#8216;broken values&#8217;, and trims that buffer before returning the result.</li>
+<li>It goes on to create the backshifts vector. The backshift vector depends on the ongoing iteration from <code>(1..n)</code>.</li>
+<li>After creating backshifts vector, it extracts the required <code>phi</code> values from the stack.</li>
+<li>Then it performs vector multiplication - <code>backshifts * parameters</code>, then adds the result.</li>
+<li>The current <code>x(t)</code> values is then returned with active white noise.</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">ar_sim</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">err_nor</span> <span class="o">=</span> <span class="ss">Distribution</span><span class="p">:</span><span class="ss">:Normal</span><span class="o">.</span><span class="n">rng</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1">#creating buffer with 10 random values</span>
+</span><span class='line'>  <span class="n">buffer</span> <span class="o">=</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">err_nor</span><span class="o">.</span><span class="n">call</span><span class="p">())</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">x</span> <span class="o">=</span> <span class="n">buffer</span> <span class="o">+</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">#For now &quot;phi&quot; are the known model parameters</span>
+</span><span class='line'>  <span class="c1">#later we will obtain it by Yule-walker/Burg</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="mi">11</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">11</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">phi</span><span class="o">.</span><span class="n">size</span>
+</span><span class='line'>      <span class="c1">#dependent on previous accumulation of x</span>
+</span><span class='line'>      <span class="n">backshifts</span> <span class="o">=</span> <span class="n">create_vector</span><span class="p">(</span><span class="n">x</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">i</span><span class="o">].</span><span class="n">reverse</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="c1">#dependent on number of phi size/order</span>
+</span><span class='line'>      <span class="n">backshifts</span> <span class="o">=</span> <span class="n">create_vector</span><span class="p">(</span><span class="n">x</span><span class="o">[</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">phi</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">i</span><span class="o">].</span><span class="n">reverse</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">create_vector</span><span class="p">(</span><span class="n">phi</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">backshifts</span><span class="o">.</span><span class="n">size</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">summation</span> <span class="o">=</span> <span class="p">(</span><span class="n">backshifts</span> <span class="o">*</span> <span class="n">parameters</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:+</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">x</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">summation</span> <span class="o">+</span> <span class="n">err_nor</span><span class="o">.</span><span class="n">call</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">x</span> <span class="o">-</span> <span class="n">buffer</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>    <br/>
+There are certain tests which will now be performed in context of <code>acf</code> and <code>pacf</code>, which I earlier coded. They form the basis of correctness of our autoregressive estimation. :) Expect the next post about those tests.</p>
+
+<h2>Moving Average Model</h2>
+
+<p>This model is represented by <strong>MA(q)</strong>, where <code>q</code> is the order of this model. Again, for pure moving-average model, we consider <code>p=0</code>.</p>
+
+<p>This is represented by following equation: <br/>
+<img src="https://upload.wikimedia.org/math/9/5/a/95a85ea60c0cd898823ffe17fb509475.png" alt="" /></p>
+
+<p>Unlike <em>autoregressive model</em>, this model was somewhat hard to obtain. It needs to obsere previous <em>error noise</em> instead of previous <code>x(t)</code> values. And the series largely depends upon the order of the model.</p>
+
+<p>It&#8217;s code can also be found on my <a href="https://github.com/ankurgel/statsample/tree/arima">github</a> branch.</p>
+
+<p>I am now currently working on those tests analysis, I mentioned; for various combinations of <code>AR(p)</code> and <code>MA(q)</code>. As they get over, I will move to realize few algorithms like <em>yule walker</em> and <em>burgs</em> for estimation of coefficients.</p>
+
+<p>Cheers, <br/>
+-Ankur Goel</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Ankur Goel</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-18T18:56:00+05:30" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://AnkurGel.github.io/blog/2013/07/18/ar-and-ma-simulations/" data-via="ankurgel" data-counturl="http://AnkurGel.github.io/blog/2013/07/18/ar-and-ma-simulations/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/07/11/cuke-up-with-cucumber/" title="Previous Post: Cuke up with Cucumber">&laquo; Cuke up with Cucumber</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/18/ar-and-ma-simulations/">AR and MA simulations</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/11/cuke-up-with-cucumber/">Cuke up with Cucumber</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/06/statsample-partial-autocorrelation/">Statsample - Partial Autocorrelation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/06/statsample-wald-test/">Statsample - Wald test</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/24/statsample-correcting-tests-and-configuration/">StatSample - Correcting tests and configuration</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/ankurgel">@ankurgel</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'ankurgel',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Ankur Goel -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

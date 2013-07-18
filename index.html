@@ -9,8 +9,7 @@
   <meta name="author" content="Ankur Goel">
 
   
-  <meta name="description" content="Recently, I wrote few features in Cucumber.
-Cucumber is a powerful tool which enables us to write automated tests in functional descriptions. These &hellip;">
+  <meta name="description" content="I have been reading and coding AR(Autoregressive Model) and Moving Average(MA) basics. First, I am very grateful for all the patience by Claudio &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +65,139 @@ Cucumber is a powerful tool which enables us to write automated tests in functio
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/18/ar-and-ma-simulations/">AR and MA Simulations</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-18T18:56:00+05:30" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I have been reading and coding <strong>AR(Autoregressive Model)</strong> and <strong>Moving Average(MA)</strong> basics. <br/>
+First, I am very grateful for all the patience by Claudio Bustos to help me with understanding this. There is still lot to be learnt in these models, but I will keep bugging him. :D</p>
+
+<p>We wrote the simulations for <code>AR(p)</code> and <code>MA(q)</code>. The idea behind creating them is to first simulate the process with known coefficients and then move on to write ARMA process which could also estimate the coefficients.</p>
+
+<h2>Autoregressive Model</h2>
+
+<p>This model is represented by <strong>AR(p)</strong> where p is the order of this model. For a pure autoregressive model, we consider order of moving average model as 0.</p>
+
+<p><code>AR(p)</code> is represented by the following equation:</p>
+
+<p><img src="http://upload.wikimedia.org/math/f/0/6/f06ba0e2d8668944406852d7f72ac2f1.png" alt="Courtesy: Wikipedia" /></p>
+
+<p>Here, <img src="http://upload.wikimedia.org/math/a/3/4/a34ff7b33cb6b9dee064215437f52349.png" alt="" /> are the parameters of model, and <img src="http://upload.wikimedia.org/math/1/5/8/158300cdcfab79e14b49519a9c907ab9.png" alt="" /> is the error noise. <br/>
+To realize this model, we have to observe and keep track of previous <code>x(t)</code> values, and realize current value with observed summation and error noise.</p>
+
+<h4>Here is that code fragment of general AR(p) simulator:</h4>
+
+<ul>
+<li>It creates a buffer initially to prevent &#8216;broken values&#8217;, and trims that buffer before returning the result.</li>
+<li>It goes on to create the backshifts vector. The backshift vector depends on the ongoing iteration from <code>(1..n)</code>.</li>
+<li>After creating backshifts vector, it extracts the required <code>phi</code> values from the stack.</li>
+<li>Then it performs vector multiplication - <code>backshifts * parameters</code>, then adds the result.</li>
+<li>The current <code>x(t)</code> values is then returned with active white noise.</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">ar_sim</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">err_nor</span> <span class="o">=</span> <span class="ss">Distribution</span><span class="p">:</span><span class="ss">:Normal</span><span class="o">.</span><span class="n">rng</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1">#creating buffer with 10 random values</span>
+</span><span class='line'>  <span class="n">buffer</span> <span class="o">=</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">err_nor</span><span class="o">.</span><span class="n">call</span><span class="p">())</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">x</span> <span class="o">=</span> <span class="n">buffer</span> <span class="o">+</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">#For now &quot;phi&quot; are the known model parameters</span>
+</span><span class='line'>  <span class="c1">#later we will obtain it by Yule-walker/Burg</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="mi">11</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">11</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">phi</span><span class="o">.</span><span class="n">size</span>
+</span><span class='line'>      <span class="c1">#dependent on previous accumulation of x</span>
+</span><span class='line'>      <span class="n">backshifts</span> <span class="o">=</span> <span class="n">create_vector</span><span class="p">(</span><span class="n">x</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">i</span><span class="o">].</span><span class="n">reverse</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="c1">#dependent on number of phi size/order</span>
+</span><span class='line'>      <span class="n">backshifts</span> <span class="o">=</span> <span class="n">create_vector</span><span class="p">(</span><span class="n">x</span><span class="o">[</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">phi</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">i</span><span class="o">].</span><span class="n">reverse</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">create_vector</span><span class="p">(</span><span class="n">phi</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">backshifts</span><span class="o">.</span><span class="n">size</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">summation</span> <span class="o">=</span> <span class="p">(</span><span class="n">backshifts</span> <span class="o">*</span> <span class="n">parameters</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:+</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">x</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">summation</span> <span class="o">+</span> <span class="n">err_nor</span><span class="o">.</span><span class="n">call</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">x</span> <span class="o">-</span> <span class="n">buffer</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>    <br/>
+There are certain tests which will now be performed in context of <code>acf</code> and <code>pacf</code>, which I earlier coded. They form the basis of correctness of our autoregressive estimation. :) Expect the next post about those tests.</p>
+
+<h2>Moving Average Model</h2>
+
+<p>This model is represented by <strong>MA(q)</strong>, where <code>q</code> is the order of this model. Again, for pure moving-average model, we consider <code>p=0</code>.</p>
+
+<p>This is represented by following equation: <br/>
+<img src="https://upload.wikimedia.org/math/9/5/a/95a85ea60c0cd898823ffe17fb509475.png" alt="" /></p>
+
+<p>Unlike <em>autoregressive model</em>, this model was somewhat hard to obtain. It needs to obsere previous <em>error noise</em> instead of previous <code>x(t)</code> values. And the series largely depends upon the order of the model.</p>
+
+<p>It&#8217;s code can also be found on my <a href="https://github.com/ankurgel/statsample/tree/arima">github</a> branch.</p>
+
+<p>I am now currently working on those tests analysis, I mentioned; for various combinations of <code>AR(p)</code> and <code>MA(q)</code>. As they get over, I will move to realize few algorithms like <em>yule walker</em> and <em>burgs</em> for estimation of coefficients.</p>
+
+<p>Cheers, <br/>
+-Ankur Goel</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -401,106 +533,6 @@ Ankur Goel</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/07/06/statsample-wald-test/">Statsample - Wald Test</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-06T13:59:00+05:30" pubdate data-updated="true">Jul 6<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hi everyone, <br/>
-After completing and verifying the integrity of all tests and Ruby versions, I and Claudio started with implementation of Wald Test. He explained it pretty well and was very patient. :)</p>
-
-<p>Wald test is used to test if a series of n acf or pacf indeces are equal to 0.<br/>
-For <code>acf</code>, the distribution for a white noise sationary process are approximately independent and identically distributed normal random variables with mean 0 and variance n<sup><sup></sup>-1.</sup></p>
-
-<p>What that means is, if terms in an <code>acf</code> of a timeseries with k lags are squared and added (sum-of-squares), then that statistic is chi-square distributed over degree of freedom, directly dependent on the k number of lags.</p>
-
-<p>I will demonstrate this with example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#Create time series</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;statsample&#39;</span>
-</span><span class='line'><span class="kp">include</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:TimeSeries</span>
-</span><span class='line'><span class="n">series</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="p">}</span><span class="o">.</span><span class="n">to_time_series</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">#find and stores it acf with specific lags</span>
-</span><span class='line'><span class="n">k</span> <span class="o">=</span> <span class="mi">10</span>
-</span><span class='line'><span class="n">series_acf</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">acf</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">#find sum of squares for series_acf using powerful Ruby map and inject.</span>
-</span><span class='line'><span class="n">sum_of_sq</span> <span class="o">=</span> <span class="n">series_acf</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="p">}</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:+</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So far, we have managed to find the sum of squares of a acf-series with k = 10 = number of lags. <br/>
-Now, we will check whether or not it is less than quantile 0.95 of a <code>chi-square</code> with <code>k</code> degree of freedom.</p>
-
-<p>For that, include <code>Distribution</code> as:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#continuing from last snippet</span>
-</span><span class='line'>
-</span><span class='line'><span class="kp">include</span> <span class="no">Distribution</span>
-</span><span class='line'><span class="n">cdf</span> <span class="o">=</span> <span class="no">ChiSquare</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">sum_of_sq</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">cdf</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">.</span><span class="mo">05</span>
-</span><span class='line'><span class="c1">#=&gt; True</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This verifies the Wald test.</p>
-
-<p>The tests can be found on Github repository at: <a href="https://github.com/AnkurGel/statsample/blob/master/test/test_wald2.rb">https://github.com/AnkurGel/statsample/blob/master/test/test_wald2.rb</a></p>
-
-<p>Cheers, <br/>
-Ankur Goel</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -516,6 +548,10 @@ Ankur Goel</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/07/18/ar-and-ma-simulations/">AR and MA simulations</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/07/11/cuke-up-with-cucumber/">Cuke up with Cucumber</a>
       </li>
     
@@ -529,10 +565,6 @@ Ankur Goel</p>
     
       <li class="post">
         <a href="/blog/2013/06/24/statsample-correcting-tests-and-configuration/">StatSample - Correcting tests and configuration</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/22/statsample-code-begins/">StatSample | Code Begins</a>
       </li>
     
   </ul>

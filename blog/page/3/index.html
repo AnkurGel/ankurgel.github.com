@@ -9,7 +9,7 @@
   <meta name="author" content="Ankur Goel">
 
   
-  <meta name="description" content="Statsample is a statistical library for Ruby and is actively developed by folks at SciRuby. Currently, Statsample is supported with Ruby 1.8.7, 1.9.1 &hellip;">
+  <meta name="description" content="TimeSeries Statsample has a module for Time Series as Statsample::TimeSeries. This module has a class named TimeSeries which enables users to perform &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,124 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/24/examples-with-statsample/">Examples With Statsample</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-24T16:51:00+05:30" pubdate data-updated="true">Apr 24<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2><u>TimeSeries</u></h2>
+
+<p>Statsample has a module for Time Series as <code>Statsample::TimeSeries</code>. This module has a class named <code>TimeSeries</code> which enables users to perform operations on sequence of data points, indexed by time and ordered from earliest to latest. Example: Stock data.
+Suppose, we have a time series as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">rand</span> <span class="mi">100</span> <span class="p">}</span><span class="o">.</span><span class="n">to_ts</span>
+</span><span class='line'><span class="c1">#=&gt; Time Series(type:scale, n:10)[62,91,92,71,86,99,80,64,15,94]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is the returned TimeSeries object which is now capable of performing several interesting operations such as:</p>
+
+<h3>Lag</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">lag</span>
+</span><span class='line'><span class="c1">#=&gt; Vector(type:scale, n:10)[nil,62,91,92,71,86,99,80,64,15]</span>
+</span><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span class='line'><span class="c1">#Lag of series by three units, will place nil in first three positions.</span>
+</span><span class='line'><span class="c1">#=&gt; Vector(type:scale, n:10)[nil,nil,nil,62,91,92,71,86,99,80]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Auto-Correlation</h3>
+
+<p>This is frequently used statistical operation. In Digital signal processing, autocorrelation of series is the cross-correlation of signal with itself, but without the normalization. Though, in statistics, normalization exists.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">acf</span>
+</span><span class='line'><span class="c1">#=&gt; Returns the auto-correlation of series.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Diff</h3>
+
+<p><code>diff</code> performs the first difference of the series. That is difference of series with itself and it&#8217;s first lag.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">timeseries</span><span class="o">.</span><span class="n">diff</span>
+</span><span class='line'><span class="c1">#=&gt; Time Series(type:scale, n:10)[nil,29,1,-21,15,13,-19,-16,-49,79]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Exponential moving average</h3>
+
+<p>Moving average is a finite impulse response filter which creates a series of averages of subsets of full-data to analyze the given set of data points. <br/>
+<a href="http://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average">EMA</a> is similar to moving average, but more weight is given to latest data. <br/>
+<img src="http://user42.tuxfamily.org/chart/manual/chart-ema-weights.png" alt="image_ema" /> <br/>
+In StatSample, EMA can be accessed from <code>TimeSeries</code> by calling <code>ema</code> on a timeseries. Example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">t_series</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">rand</span> <span class="p">}</span><span class="o">.</span><span class="n">to_timeseries</span>
+</span><span class='line'><span class="n">t_series</span><span class="o">.</span><span class="n">ema</span>
+</span><span class='line'><span class="n">t_series</span><span class="o">.</span><span class="n">ema</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="c1">#=&gt; uses 15 observations and sets Welles wilder coefficient to true.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>acf</code> takes optional parameters - n(default: 10) that accounts on how many observations to consider and Welles Wilder coefficent(default: zero) which uses smoothing value of <code>2/(n + 1)</code> on false and <code>1/n</code> on true.</p>
+
+<p><code>TimeSeries</code> module, as can be seen, can become highly sophisticated on inclusion of other methods such as <a href="http://en.wikipedia.org/wiki/Autoregressive%E2%80%93moving-average_model">ARMA Estimation</a> etc.</p>
+
+<h2><u>Simple Random Sampling</u></h2>
+
+<p>SRS is an unbiased technique to choose subset of individuals (sample) from a larger set (called, population). Selection of each individual in that sample is entirely random and has equal probability as other individuals. Various techniques for SRS is <a href="http://stattrek.com/Lesson6/SRS.aspx">given here</a>. <br/>
+<code>SRS</code> is a module in StatSample which comprises of various sections for Proportion estimation, confidence intervals, standard deviation, mean estimation etc. <br/>
+I covered various tests of SRS methods <a href="https://github.com/AnkurGel/statsample/commit/80f7a73be015d2ac7f531fb2125363a6617f0fab">here</a>, as I explored and understood them. I am currently still writing few more tests for this and other modules in StatSample.</p>
+
+<p>I will update the post as soon as I write them. If anyone wishes me to write about the detailed functionality of this module too, please comment. I will be delighted to do that.</p>
+
+<p>Cheers, <br/>
+-Ankur Goel</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -140,6 +258,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/07/18/ar-and-ma-simulations/">AR and MA simulations</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/07/11/cuke-up-with-cucumber/">Cuke up with Cucumber</a>
       </li>
     
@@ -153,10 +275,6 @@
     
       <li class="post">
         <a href="/blog/2013/06/24/statsample-correcting-tests-and-configuration/">StatSample - Correcting tests and configuration</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/22/statsample-code-begins/">StatSample | Code Begins</a>
       </li>
     
   </ul>
