@@ -4,7 +4,7 @@
   <title><![CDATA[Ankur Goel]]></title>
   <link href="http://AnkurGel.github.io/atom.xml" rel="self"/>
   <link href="http://AnkurGel.github.io/"/>
-  <updated>2013-07-18T19:58:39+05:30</updated>
+  <updated>2013-07-23T22:54:33+05:30</updated>
   <id>http://AnkurGel.github.io/</id>
   <author>
     <name><![CDATA[Ankur Goel]]></name>
@@ -12,6 +12,176 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AR/MA, ARMA acf - pacf visualizations]]></title>
+    <link href="http://AnkurGel.github.io/blog/2013/07/20/ar-ma-arma-acf-pacf-visualizations/"/>
+    <updated>2013-07-20T18:27:00+05:30</updated>
+    <id>http://AnkurGel.github.io/blog/2013/07/20/ar-ma-arma-acf-pacf-visualizations</id>
+    <content type="html"><![CDATA[<p>As mentioned in <a href="http://ankurgoel.com/blog/2013/07/18/ar-and-ma-simulations/">previous post</a>, I have been working with Autoregressive and Moving Average simulations. <br/>
+To test the correctness of estimations by our simulations, we employ <em>acf</em>(Autocorrelation) and <em>pacf</em>(partial autocorrelation) to our use. For different order of AR and MA, we get the varying visualizations with them, such as:</p>
+
+<ul>
+<li>Exponential decreasing curves.  * Damped sine waves.</li>
+<li>Positive and negative spikes, etc.</li>
+</ul>
+
+
+<p>While analyzing and writing tests for same, I also took some time to visualize that data on ilne and bar charts to get a clearer picture:</p>
+
+<h2>AR(1) process</h2>
+
+<p>AR(1) process is the autoregressive simulation with order p = 1, i.e, with one value of phi.<br/>
+Ideal AR(p) process is represented by: <br/>
+<img src="http://upload.wikimedia.org/math/f/0/6/f06ba0e2d8668944406852d7f72ac2f1.png" alt="Courtesy: Wikipedia" /> <br/>
+To simulate this, install <a href="http://github.com/AnkurGel/bioruby-statsample-timeseries"><code>bio-statsample-timeseries</code></a> from here.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;bio-statsample-timeseries&#39;</span>
+</span><span class='line'><span class="kp">include</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:ARIMA</span>
+</span><span class='line'><span class="n">series</span> <span class="o">=</span> <span class="no">ARIMA</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="n">ar_1</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">ar_sim</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">9</span><span class="o">]</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here, number of observations, <strong>n</strong> = 1500 (greater value is preferrable for best fit), p = 1, with <em>phi</em> = [0.9].</p>
+
+<h3>ACF</h3>
+
+<p>To generate it&#8217;s autocorrelation</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">acf</span> <span class="o">=</span> <span class="n">ar_1</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">acf</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">acf</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For an AR(1) process, <code>acf</code> must exponentially decay if <code>phi &gt; 0</code>, or alternate in sign if <code>phi &lt; 0</code><a href="https://www.scss.tcd.ie/Rozenn.Dahyot/ST7005/11ACFPACF.pdf">Ref</a>. Go through the analysis above. It can be visualized as:  <br/>
+When <code>phi &gt; 0</code>, acf decreases exponentially:  <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_positive_phi_acf.png" alt="AR(1) positive phi acf" />
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_positive_phi_acf_line.png" alt="AR(1) positive phi acf line chart" /> <br/>
+When <code>phi &lt; 0</code>, you get the alternate acf lags:  <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_negative_phi_acf.png" alt="AR(1) negative phi acf" />
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_negative_phi_acf_line.png" alt="AR(1) negative phi acf line chart" /></p>
+
+<h3>PACF</h3>
+
+<p>To generate it&#8217;s partial autocorrelation:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">pacf</span> <span class="o">=</span> <span class="n">ar_1</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">pacf</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">pacf</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For AR(1) process, <code>pacf</code> must have a spike at lag 1, then 0. Former spike must be positive if <code>phi &gt; 0</code>, otherwise, negative spike. Have a look at the pacf series generated above. On visualizing the data:  <br/>
+When <code>phi &gt; 0</code>, positive lag at 1 and 0(contains 1.0):  <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_postive_phi_pacf.png" alt="AR(1) positive phi pacf" />
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_postive_phi_pacf_line.png" alt="AR(1) positive phi pacf line chart" /> <br/>
+When <code>phi &lt; 0</code>, negative lag at 1:  <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_negative_phi_pacf.png" alt="AR(1) negative phi pacf bar chart" /></p>
+
+<p>Here is the representation of ideal acf-vs-pacf for positive phi in AR(1): <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/ar1_postive_acf_vs_pacf.png" alt="AR(1) acf/pacf" /></p>
+
+<h2>AR(P) process</h2>
+
+<p>Simulation of AR(p) process is similar as AR(1).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">series</span> <span class="o">=</span> <span class="no">ARIMA</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="n">phi_params</span> <span class="o">=</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="o">.</span><span class="mi">3</span><span class="o">]</span>
+</span><span class='line'><span class="n">ar_p</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">ar_sim</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="n">phi_params</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'><span class="c1">#acf</span>
+</span><span class='line'><span class="n">acf</span> <span class="o">=</span> <span class="n">ar_p</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">acf</span>
+</span><span class='line'><span class="n">pacf</span> <span class="o">=</span> <span class="n">ar_p</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">pacf</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ACF</h3>
+
+<p>For AR(p), <code>acf</code> must give a damping sine wave. The pattern is greatly dependent on the value and sign of phi parameters. <br/>
+When positive content in phi coefficients is more, you will get a sine wave starting from positive side, else, sine wave will start from negative side.  <br/>
+Notice, the damping sine wave starting from positive side here:  <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%28p%29_positive_phi_sine_wave.png" alt="AR(p) positive" /> <br/>
+and negative side here.. <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%28p%29_negative_phi_acf_sine_wave.png" alt="AR(p) negative" /></p>
+
+<h3>PACF</h3>
+
+<p><code>pacf</code> gives spike at lag 0(value = 1.0, default) and from lag 1 to lag k. The example above, features AR(2) process, for this, we must get spikes at lag 1 - 2 as: <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%28p%29_negative_phi_acf_sine_wave.png" alt="AR(p) pacf spikes" /></p>
+
+<h2>MA(1) process</h2>
+
+<p>MA(1) process is the moving average simulation with order <code>q = 1</code>, i.e, with one value of <code>theta</code>.<br/>
+To simulate this, use <code>ma_sim</code> method from <code>Statsample::ARIMA::ARIMA</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;bio-statsample-timeseries&#39;</span>
+</span><span class='line'><span class="kp">include</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:ARIMA</span>
+</span><span class='line'><span class="n">series</span> <span class="o">=</span> <span class="no">ARIMA</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="n">ma_1</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">ma_sim</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">9</span><span class="o">]</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'><span class="n">acf</span> <span class="o">=</span> <span class="n">ma_1</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">acf</span>
+</span><span class='line'><span class="n">pacf</span> <span class="o">=</span> <span class="n">ma_1</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">pacf</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For <code>theta &gt; 0</code>, for <code>MA(1)</code>, we must get a positive spike at lag 1 as: <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/MA%281%29_postive_acf.png" alt="MA(1) positive acf" />
+For <code>theta &lt; 0</code>, the spike at lag 1 must be in negatie direction as: <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/MA%281%29_negative_acf.png" alt="MA(1) negative acf" /></p>
+
+<p>When I put these two visualizations aside each other, the visualization seems quite fit: <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/MA%281%29_acf_positive_vs_negative.png" alt="MA(1) positive/negative" /></p>
+
+<h2>MA(q) process</h2>
+
+<p>MA(q) process. <code>Order = q</code> => Number of theta coefficients = q. <br/>
+Ideal MA(q) process is represented by:  <br/>
+<img src="https://upload.wikimedia.org/math/9/5/a/95a85ea60c0cd898823ffe17fb509475.png" alt="MA(q) Courtesy: Wiki" /></p>
+
+<h3>ACF</h3>
+
+<p>Similar to AR(1) simulation, it will have spikes for lag 1 - lag p as : <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/MA%28q%29_acf_spikes.png" alt="MA(1) acf" /></p>
+
+<h3>PACF</h3>
+
+<p>In pacf of MA(q) simulation, we observe exponentially decaying/damping sine wave. <br/>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/MA%28q%29_paf_damped_sine_wave.png" alt="MA(q) pacf" /></p>
+
+<h2>ARMA(p, q) process</h2>
+
+<p>ARMA(p, q) is combination of autoregressive and moving average simulations. <br/>
+When <code>q = 0</code>, the process is called as pure autoregressive process; when <code>p = 0</code>, the process is purely moving average. <br/>
+The simulator of ARMA can be found as <code>arma_sim</code> in <code>Statsample::ARIMA::ARIMA</code>. <br/>
+For <code>ARMA(1, 1)</code> process, here are the comparisons of the visualizations from <code>R</code> and this code, which just made my day :)</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/ARMA/ARMA%281%2C1%29_R.png" alt="R ARMA(1, 1)" />
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/ARMA/ARMA%281%2C1%29_sim.png" alt="Statsample ARMA(1,1)" /></p>
+
+<p>Quite Fit!</p>
+
+<p>Cheers, <br/>
+- Ankur Goel</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AR and MA simulations]]></title>
