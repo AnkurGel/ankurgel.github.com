@@ -4,7 +4,7 @@
   <title><![CDATA[Ankur Goel]]></title>
   <link href="http://AnkurGel.github.io/atom.xml" rel="self"/>
   <link href="http://AnkurGel.github.io/"/>
-  <updated>2013-07-23T22:54:33+05:30</updated>
+  <updated>2013-07-24T12:45:18+05:30</updated>
   <id>http://AnkurGel.github.io/</id>
   <author>
     <name><![CDATA[Ankur Goel]]></name>
@@ -22,7 +22,8 @@
 To test the correctness of estimations by our simulations, we employ <em>acf</em>(Autocorrelation) and <em>pacf</em>(partial autocorrelation) to our use. For different order of AR and MA, we get the varying visualizations with them, such as:</p>
 
 <ul>
-<li>Exponential decreasing curves.  * Damped sine waves.</li>
+<li>Exponential decreasing curves.</li>
+<li>Damped sine waves.</li>
 <li>Positive and negative spikes, etc.</li>
 </ul>
 
@@ -120,7 +121,7 @@ and negative side here.. <br/>
 <h3>PACF</h3>
 
 <p><code>pacf</code> gives spike at lag 0(value = 1.0, default) and from lag 1 to lag k. The example above, features AR(2) process, for this, we must get spikes at lag 1 - 2 as: <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%28p%29_negative_phi_acf_sine_wave.png" alt="AR(p) pacf spikes" /></p>
+<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%28p%29_positive_phi_pacf_spikes.png" alt="AR(p) pacf spikes" /></p>
 
 <h2>MA(1) process</h2>
 
