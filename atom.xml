@@ -4,7 +4,7 @@
   <title><![CDATA[Ankur Goel]]></title>
   <link href="http://AnkurGel.github.io/atom.xml" rel="self"/>
   <link href="http://AnkurGel.github.io/"/>
-  <updated>2013-07-24T12:45:18+05:30</updated>
+  <updated>2013-08-04T16:20:23+05:30</updated>
   <id>http://AnkurGel.github.io/</id>
   <author>
     <name><![CDATA[Ankur Goel]]></name>
@@ -12,6 +12,77 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Levinson-Durbin and Autocovariance]]></title>
+    <link href="http://AnkurGel.github.io/blog/2013/08/04/levinson-durbin-and-autocovariance/"/>
+    <updated>2013-08-04T16:02:00+05:30</updated>
+    <id>http://AnkurGel.github.io/blog/2013/08/04/levinson-durbin-and-autocovariance</id>
+    <content type="html"><![CDATA[<p>As discussed, I am implementing estimation methods for <code>phi</code> in <code>AR</code> modelling. We covered <code>yule_walker</code> earlier, I&#8217;ll write a post about that. After it&#8217;s implementation, we go ahead with another estimation method - <strong>Levinson Durbin</strong></p>
+
+<p><a href="http://en.wikipedia.org/wiki/Levinson_recursion">Levinson-Durbin</a> requires timeline series to be demeaned(<code>series = series - series.mean</code>) and it&#8217;s autocovavirance.</p>
+
+<p>Autocovariance of series is represented by summation of summation of product of series with series at lag <code>k</code>. That is, summation of <code>(x_i * x_{i+lag})</code>. It is also directly related with <code>acf</code> of series as <code>acf(k) = acvf(h) / acvf(0)</code>. It&#8217;s code can now be found in <code>Statsample::TimeSeries</code>&#8217;s <code>acvf</code> method.</p>
+
+<p>Now, with the help of autocovariance series, our <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/timeseries/pacf.rb#L16"><code>levinson_durbin</code></a> function recursively computes the following parameters:</p>
+
+<ul>
+<li>sigma_v : estimation of error variance</li>
+<li>arcoefs : AR phi values for timeseries</li>
+<li>pac     : unbiased levinson pacf estiation</li>
+<li>sigma   : sigma for AR.</li>
+</ul>
+
+
+<p>L-D performs recursive matrix and vector multiplications to populate it&#8217;s toeplitz matrix. Here is some code depicting those manipulations:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>      <span class="n">order</span> <span class="o">=</span> <span class="n">nlags</span>
+</span><span class='line'>      <span class="n">phi</span> <span class="o">=</span> <span class="no">Matrix</span><span class="o">.</span><span class="n">zero</span><span class="p">(</span><span class="n">nlags</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">sig</span> <span class="o">=</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">nlags</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">#setting initial point for recursion:</span>
+</span><span class='line'>      <span class="n">phi</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">series</span><span class="o">[</span><span class="mi">1</span><span class="o">]/</span><span class="n">series</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span><span class='line'>      <span class="c1">#phi[1][1] = series[1]/series[0]</span>
+</span><span class='line'>      <span class="n">sig</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">series</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">-</span> <span class="n">phi</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span> <span class="o">*</span> <span class="n">series</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="mi">2</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">order</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">phi</span><span class="o">[</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">series</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">-</span> <span class="p">(</span><span class="ss">Statsample</span><span class="p">:</span><span class="ss">:Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">phi</span><span class="o">[</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span> <span class="o">*</span> <span class="n">series</span><span class="o">[</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">k</span><span class="o">].</span><span class="n">reverse</span><span class="o">.</span><span class="n">to_ts</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">)</span> <span class="o">/</span> <span class="n">sig</span><span class="o">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'>        <span class="c1">#some serious refinement needed in above for matrix manipulation. Will do today</span>
+</span><span class='line'>        <span class="mi">1</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">j</span><span class="o">|</span>
+</span><span class='line'>          <span class="n">phi</span><span class="o">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="n">phi</span><span class="o">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="o">-</span> <span class="n">phi</span><span class="o">[</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="o">]</span> <span class="o">*</span> <span class="n">phi</span><span class="o">[</span><span class="n">k</span><span class="o">-</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>        <span class="n">sig</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="n">sig</span><span class="o">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">phi</span><span class="o">[</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="o">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Implementation can be found <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/timeseries/pacf.rb#L16">here</a>.</p>
+
+<p>Now, in this week, I will integrate this in AR modelling and perform some tests to verify the estimation. And will soon start with next estimation method :)</p>
+
+<p>Cheers, <br/>
+Ankur Goel</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AR/MA, ARMA acf - pacf visualizations]]></title>
