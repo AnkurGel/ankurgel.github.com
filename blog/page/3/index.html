@@ -9,7 +9,7 @@
   <meta name="author" content="Ankur Goel">
 
   
-  <meta name="description" content="Hi everyone, After completing and verifying the integrity of all tests and Ruby versions, I and Claudio started with implementation of Wald Test. He &hellip;">
+  <meta name="description" content="The partial autocorrelation(pacf) of an ARMA process is the function defined by the equation: f(0) = 1, f(x) = g(x)(x) correlation of series with &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,181 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/06/statsample-partial-autocorrelation/">Statsample - Partial Autocorrelation</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-06T14:00:00+05:30" pubdate data-updated="true">Jul 6<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The <strong>partial autocorrelation</strong>(pacf) of an ARMA process is the function defined by the equation: <br/>
+<code>f(0) = 1</code>, <code>f(x) = g(x)(x)</code> correlation of series with itself. for <code>x &gt;= 1</code></p>
+
+<p>The first component of every pacf series is 1.</p>
+
+<p>I implemented pacf with yule-walker equations of unbiased and mle outcomes.  Yule-walker equations are the set of equations represented by:  <br/>
+<img src="https://upload.wikimedia.org/math/0/b/6/0b6c74023353b9ca598f842c07c3c286.png" alt="Courtesy: Wikipedia" /></p>
+
+<p>Yule-walker uses the <a href="http://en.wikipedia.org/wiki/Toeplitz_matrix">Toeplitz matrix</a>(gives same output when stored in either row-major or column-major form) inverse with the outcomes to generate the intermediate vector results.</p>
+
+<p>Here, we can generate pacf by making use of either <code>unbiased</code> and <code>mle</code> method with yule-walker function. For <code>unbiased</code>, the denominator is <code>(n-k)</code> whereas for <code>mle</code>, it is <code>n</code> (n is the size of time-series). To achieve that, I made use of fantastic Ruby <code>lambdas</code> to make a closure over the variable <code>k</code> as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="nb">method</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">eql?</span> <span class="s1">&#39;yw&#39;</span>
+</span><span class='line'>  <span class="c1">#unbiased =&gt; denominator = (n - k)</span>
+</span><span class='line'>  <span class="n">denom</span> <span class="o">=-&gt;</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span> <span class="o">-</span> <span class="n">k</span> <span class="p">}</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'>  <span class="c1">#mle</span>
+</span><span class='line'>  <span class="c1">#denominator =&gt; (n)</span>
+</span><span class='line'>  <span class="n">denom</span> <span class="o">=-&gt;</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Below might have been a viable shortcut, but I used former for maintaining descriptive comments and simplicity in code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">denom</span> <span class="o">=-&gt;</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span> <span class="nb">method</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">eql?</span><span class="p">(</span><span class="s1">&#39;yw&#39;</span><span class="p">)</span> <span class="p">?</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">k</span><span class="p">)</span> <span class="p">:</span> <span class="n">n</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://www-stat.wharton.upenn.edu/~steele/Courses/956/ResourceDetails/YWSourceFiles/YW-Eshel.pdf">Here is the useful description</a> and theoretical implementation of yule-walker by <em>University of Pennsylvania</em>.</p>
+
+<p>Henceforth, the overall yule-walker method looks like following:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">yule_walker</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">method</span><span class="o">=</span><span class="s1">&#39;yw&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1">#From the series, estimates AR(p)(autoregressive) parameter</span>
+</span><span class='line'>  <span class="c1">#using Yule-Waler equation. See -</span>
+</span><span class='line'>  <span class="c1">#http://en.wikipedia.org/wiki/Autoregressive_moving_average_model</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">#parameters:</span>
+</span><span class='line'>  <span class="c1">#ts = series</span>
+</span><span class='line'>  <span class="c1">#k = order, default = 1</span>
+</span><span class='line'>  <span class="c1">#method = can be &#39;yw&#39; or &#39;mle&#39;. If &#39;yw&#39; then it is unbiased, denominator</span>
+</span><span class='line'>  <span class="c1">#is (n - k)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">#returns:</span>
+</span><span class='line'>  <span class="c1">#rho =&gt; autoregressive coefficients</span>
+</span><span class='line'>  <span class="n">ts</span> <span class="o">=</span> <span class="n">series</span> <span class="c1">#timeseries</span>
+</span><span class='line'>  <span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">mean</span>
+</span><span class='line'>  <span class="n">n</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">size</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nb">method</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">eql?</span> <span class="s1">&#39;yw&#39;</span>
+</span><span class='line'>    <span class="c1">#unbiased =&gt; denominator = (n - k)</span>
+</span><span class='line'>    <span class="n">denom</span> <span class="o">=-&gt;</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span> <span class="o">-</span> <span class="n">k</span> <span class="p">}</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="c1">#mle</span>
+</span><span class='line'>    <span class="c1">#denominator =&gt; (n)</span>
+</span><span class='line'>    <span class="n">denom</span> <span class="o">=-&gt;</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span> <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">r</span> <span class="o">=</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="mi">0</span><span class="o">.</span><span class="mi">0</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">r</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="p">}</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:+</span><span class="p">)</span><span class="o">.</span><span class="n">to_f</span> <span class="o">/</span> <span class="n">denom</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to_f</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">for</span> <span class="n">l</span> <span class="k">in</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.k</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">r</span><span class="o">[</span><span class="n">l</span><span class="o">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ts</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">-l</span><span class="o">].</span><span class="n">zip</span><span class="p">(</span><span class="n">ts</span><span class="o">[</span><span class="n">l</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">size</span><span class="o">]</span><span class="p">))</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">x</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:*</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:+</span><span class="p">)</span><span class="o">.</span><span class="n">to_f</span> <span class="o">/</span> <span class="n">denom</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="o">.</span><span class="n">to_f</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">r_R</span> <span class="o">=</span> <span class="n">toeplitz</span><span class="p">(</span><span class="n">r</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">-</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">mat</span> <span class="o">=</span> <span class="no">Matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="n">r_R</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+</span><span class='line'>  <span class="n">solve_matrix</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">r</span><span class="o">[</span><span class="mi">1</span><span class="o">.</span><span class="n">.r</span><span class="o">.</span><span class="n">size</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>toeplitz</code> method generates the Toeplitz matrix, and <code>solve_matrix</code> solves the equation by using the inverse and matrix muliplication.</p>
+
+<p><code>pacf</code> is available in <code>Statsample::TimeSeries</code> and can be called as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">series</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">10</span> <span class="p">}</span><span class="o">.</span><span class="n">to_ts</span>
+</span><span class='line'><span class="c1">#Usage: pacf(lags, method), method = &#39;yw&#39; =&gt; unbiased, &#39;mle&#39; =&gt; mle</span>
+</span><span class='line'><span class="n">series</span><span class="o">.</span><span class="n">pacf</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;yw&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="c1">#=&gt; results</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The entire implementation can be seen at : <a href="https://github.com/AnkurGel/statsample/blob/master/lib/statsample/timeseries.rb#L151">https://github.com/AnkurGel/statsample/blob/master/lib/statsample/timeseries.rb#L151</a> with it&#8217;s tests at : <a href="https://github.com/AnkurGel/statsample/blob/master/test/test_pacf.rb">https://github.com/AnkurGel/statsample/blob/master/test/test_pacf.rb</a></p>
+
+<p>Cheers,
+/-Ankur Goel</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -238,124 +413,6 @@ You can now build it by:</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/06/22/statsample-code-begins/">StatSample | Code Begins</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-22T09:51:00+05:30" pubdate data-updated="true">Jun 22<span>nd</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hi everyone!</p>
-
-<p>This summer, I am working with Ruby Science Foundation for StatSample project. As you must have read in <a href="http://ankurgoel.com/blog/archives/">previous blog posts</a>; StatSample is a powerful statistical library in <strong>Ruby</strong>. Unfortunately, development of this great utility has been on hold from last 2 years. My project aims to revamp StatSample and primarily to enhance functionality for TimeSeries and Generalized Linear Models.</p>
-
-<p>You can read more about my proposal, <a href="http://www.google-melange.com/gsoc/project/google/gsoc2013/ankurgel/63001">here</a>.</p>
-
-<p>During the community bonding period, I initially studied on few topics which my project is concerned about - primarily, estimation methods like <a href="https://en.wikipedia.org/wiki/Autoregressive_integrated_moving_average">ARIMA</a>. I saw it&#8217;s implementation in alternative statistical applications like R and StatsModels. <a href="http://statsmodels.sourceforge.net/devel/generated/statsmodels.tsa.arima_model.ARIMA.html#statsmodels.tsa.arima_model.ARIMA">StatsModels</a> uses Kalman filter for maximum likelihood and provides other estimations such as <a href="http://en.wikipedia.org/wiki/Likelihood_function#Log-likelihood">log-likelihood</a> and conditional-sum-of-squares etc. The basic interface for ARIMA in StatsModels is as follows:</p>
-
-<figure class='code'><figcaption><span>ARIMA class in StatsModels</span><a href='https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py'>Source code of class</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">ARIMA</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">dates</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-</span><span class='line'><span class="c">#series =&gt; list of timeseries values</span>
-</span><span class='line'><span class="c">#order  =&gt; ARIMA order(p=autoregressive, d=differenced, q=moving average)</span>
-</span><span class='line'><span class="c">#dates  =&gt; [optional] timeline</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The returned ARIMA object can be called with :</p>
-
-<ul>
-<li><a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py#L924"><code>fit(...)</code></a> for maximum likelihood with primarily three methods - maximum-likelihood, conditional-sum-of-squares, css-then-mle.</li>
-<li><a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py#L1004"><code>predict(...)</code></a>, it is a recursive function which gives back list of predictedvalues for supplied varying series.</li>
-<li><a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py#L667"><code>loglike_css(...)</code></a> - stands for conditional-sum-of-squares, returns aggregated css value.</li>
-</ul>
-
-
-<p>The R Project too has substantial work in ARIMA. I talked about it on <a href="https://groups.google.com/forum/?fromgroups=#!topic/sciruby-dev/Qc62IG7RMi0">mailing list</a>. Thanks to <a href="https://groups.google.com/d/msg/sciruby-dev/Qc62IG7RMi0/J9AYMi7-V2YJ">John&#8217;s concerns</a>, researching more in StatsModels was good idea than in R. In StatSample, we <em>should</em> work on ARIMA module as idiomatically they have done in <a href="https://github.com/statsmodels/statsmodels/blob/master/statsmodels/tsa/arima_model.py">StatsModels</a>. <br/>
-Beside this, I honestly didn&#8217;t get much time to devote to project during this period because of my then ongoing semester examinations, which I initially brought into notice to my mentors.</p>
-
-<p>Currently, I am working on repairing and brining uniformity in tests. StatSample&#8217;s tests are written in MiniTest <strong>primarily</strong>, and somewhere making use of <code>shoulda</code> DSL. Tests using the latter, are breaking on my system with:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>➜  <span class="nb">test </span>git:<span class="o">(</span>master<span class="o">)</span> ✗ ruby test_anovaoneway.rb
-</span><span class='line'>test_anovaoneway.rb:3:in <span class="sb">`</span>&lt;class:StatsampleAnovaOneWayTestCase&gt;<span class="s1">&#39;: undefined method `context&#39;</span> <span class="k">for </span>StatsampleAnovaOneWayTestCase:Class <span class="o">(</span>NoMethodError<span class="o">)</span>
-</span><span class='line'>  from test_anovaoneway.rb:2:in <span class="sb">`</span>&lt;main&gt;<span class="s1">&#39;</span>
-</span><span class='line'><span class="s1">➜  test git:(master) ✗ ruby test_regression.rb </span>
-</span><span class='line'><span class="s1">test_regression.rb:4:in `&lt;class:StatsampleRegressionTestCase&gt;&#39;</span>: undefined method <span class="sb">`</span>context<span class="s1">&#39; for StatsampleRegressionTestCase:Class (NoMethodError)</span>
-</span><span class='line'><span class="s1">  from test_regression.rb:3:in `&lt;main&gt;&#39;</span>
-</span><span class='line'>➜  <span class="nb">test </span>git:<span class="o">(</span>master<span class="o">)</span> ✗
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>To aid this, I am correcting and testing specs as : <a href="https://github.com/AnkurGel/statsample/commit/47ff467f9866798e0917cd75ccb21ad046c3b0d3">commit</a>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>➜  statsample git:<span class="o">(</span>master<span class="o">)</span> ✗ ruby <span class="nb">test</span>/test_regression2.rb
-</span><span class='line'>Run options: --seed 40873
-</span><span class='line'>
-</span><span class='line'><span class="c"># Running tests:</span>
-</span><span class='line'>
-</span><span class='line'>..S......
-</span><span class='line'>
-</span><span class='line'>Finished tests in 0.176938s, 50.8652 tests/s, 740.3708 assertions/s.
-</span><span class='line'>
-</span><span class='line'>9 tests, 131 assertions, 0 failures, 0 errors, 1 skips
-</span><span class='line'>➜  statsample git:<span class="o">(</span>master<span class="o">)</span> ✗
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Hopefully, setting up the codebase in good position will work great as I dwell in coding further with TimeSeries.</p>
-
-<p>Github: <a href="http://github.com/AnkurGel/statsample">http://github.com/AnkurGel/statsample</a></p>
-
-<p>Cheers! <br/>
--Ankur Goel</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -373,6 +430,10 @@ Beside this, I honestly didn&#8217;t get much time to devote to project during t
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/08/20/kalman-and-cholesky-decomposition/">Kalman and Cholesky decomposition</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/08/06/bio-statsample-timeseries-deliverables/">bio-statsample-timeseries Deliverables</a>
       </li>
     
@@ -386,10 +447,6 @@ Beside this, I honestly didn&#8217;t get much time to devote to project during t
     
       <li class="post">
         <a href="/blog/2013/07/18/ar-and-ma-simulations/">AR and MA simulations</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/11/cuke-up-with-cucumber/">Cuke up with Cucumber</a>
       </li>
     
   </ul>
