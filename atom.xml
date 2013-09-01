@@ -4,7 +4,7 @@
   <title><![CDATA[Ankur Goel]]></title>
   <link href="http://AnkurGel.github.io/atom.xml" rel="self"/>
   <link href="http://AnkurGel.github.io/"/>
-  <updated>2013-08-20T14:24:29+05:30</updated>
+  <updated>2013-09-01T17:41:19+05:30</updated>
   <id>http://AnkurGel.github.io/</id>
   <author>
     <name><![CDATA[Ankur Goel]]></name>
@@ -12,6 +12,127 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Utility functions and Documentation]]></title>
+    <link href="http://AnkurGel.github.io/blog/2013/09/01/utility-functions-and-documentation/"/>
+    <updated>2013-09-01T17:15:00+05:30</updated>
+    <id>http://AnkurGel.github.io/blog/2013/09/01/utility-functions-and-documentation</id>
+    <content type="html"><![CDATA[<p>I have been coding the utility functions for matrices and vectors which we are/will need frequently in further functionalities.  <br/>
+One of it is to <code>add_constant</code> to a matrix. <code>add_constant</code> prepends or appends a column of ones to a matrix if it already doesn&#8217;t have one.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#=Adds a column of constants.</span>
+</span><span class='line'><span class="c1">#Appends a column of ones to the matrix/array if first argument is false</span>
+</span><span class='line'><span class="c1">#If an n-array, first checks if one column of ones is already present</span>
+</span><span class='line'><span class="c1">#if present, then original(self) is returned, else, prepends with a vector of ones</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">add_constant</span><span class="p">(</span><span class="n">prepend</span> <span class="o">=</span> <span class="kp">true</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1">#for Matrix</span>
+</span><span class='line'>  <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">column_size</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:to_f</span><span class="p">)</span> <span class="o">==</span> <span class="ss">Object</span><span class="p">:</span><span class="ss">:Vector</span><span class="o">.</span><span class="n">elements</span><span class="p">(</span><span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">row_size</span><span class="p">,</span> <span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="p">))</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nb">self</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="c1">#append/prepend a column of one&#39;s</span>
+</span><span class='line'>  <span class="n">vectors</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">row_size</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">prepend</span>
+</span><span class='line'>      <span class="o">[</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">].</span><span class="n">concat</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="nb">self</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">return</span> <span class="no">Matrix</span><span class="o">.</span><span class="n">rows</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are other such methods such as <code>chain_dot</code> which carries out dot multplication of matrices in chain. It uses the ruby&#8217;s <code>reduce</code> ability to reduce the available arguments(matrices) to consequential product.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#=Chain Product</span>
+</span><span class='line'><span class="c1">#Class method</span>
+</span><span class='line'><span class="c1">#Returns the chain product of two matrices</span>
+</span><span class='line'><span class="c1">#==Usage:</span>
+</span><span class='line'><span class="c1">#Let `a` be 4 * 3 matrix, </span>
+</span><span class='line'><span class="c1">#Let `b` be 3 * 3 matrix, </span>
+</span><span class='line'><span class="c1">#Let `c` be 3 * 1 matrix,</span>
+</span><span class='line'><span class="c1">#then `Matrix.chain_dot(a, b, c)`</span>
+</span><span class='line'><span class="c1">#===*NOTE*: Send the matrices in multiplicative order with proper dimensions</span>
+</span><span class='line'><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">chain_dot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1">#inspired by Statsmodels</span>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="n">args</span><span class="o">.</span><span class="n">reduce</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="p">}</span> <span class="c1">#perform matrix multiplication in order</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="ss">ExceptionForMatrix</span><span class="p">:</span><span class="ss">:ErrDimensionMismatch</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;ExceptionForMatrix: Please provide matrices with proper multiplicative dimensions&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Apart from adding such functionalities, I have covered entire <em>documentation</em> of <code>bio-statsample-timeseries</code>. I made sure to explain role of each function, every input parameter, and return type of the function. In most of the cases, I also added the usage examples too. <br/>
+Later, I will add the usage examples in all those which are still not equipped with that and details about parameters wherever it is still missing.</p>
+
+<p>After this, with the great help from Claudio and Ra&#8217;s <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/issues/2">pointers</a> about modular(namespace) hierarchial convention; we managed to make it more conventional. :) <br/>
+Here are the final results:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Statsample::TimeSeries</span> <span class="c1">#Module for all Timeseries related stuff</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Statsample</span><span class="o">::</span><span class="ss">TimeSeries</span><span class="p">:</span><span class="ss">:Series</span> <span class="o">&lt;</span> <span class="ss">Statsmple</span><span class="p">:</span><span class="ss">:Vector</span>  <span class="c1"># Class containing a timeseries objects and general related methods</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">Statsample::TimeSeries::Pacf</span> <span class="c1">#Pacf related methods</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Statsample</span><span class="o">::</span><span class="ss">TimeSeries</span><span class="p">:</span><span class="ss">:Arima</span> <span class="c1">#Arima class, which is initialized by class method</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Statsample</span><span class="o">::</span><span class="ss">TimeSeries</span><span class="p">:</span><span class="ss">:Arima</span><span class="o">::</span><span class="no">KalmanFilter</span> <span class="c1"># For Kalman Filter on ARIMA</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We are now reading and continuing to code Kalman filter. Hope it doesn&#8217;t stay tricky. :)</p>
+
+<p>Till next time, <br/>
+Cheers, <br/>
+- Ankur Goel</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Kalman and Cholesky decomposition]]></title>

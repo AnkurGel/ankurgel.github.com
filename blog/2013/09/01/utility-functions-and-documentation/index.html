@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Ankur Goel</title>
+  <title>Utility functions and Documentation - Ankur Goel</title>
   <meta name="author" content="Ankur Goel">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://AnkurGel.github.io">
+  <link rel="canonical" href="http://AnkurGel.github.io/blog/2013/09/01/utility-functions-and-documentation">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Ankur Goel" type="application/atom+xml">
@@ -63,15 +63,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/09/01/utility-functions-and-documentation/">Utility Functions and Documentation</a></h1>
+      <h1 class="entry-title">Utility Functions and Documentation</h1>
     
     
       <p class="meta">
@@ -94,7 +91,7 @@
   </header>
 
 
-  <div class="entry-content"><p>I have been coding the utility functions for matrices and vectors which we are/will need frequently in further functionalities.  <br/>
+<div class="entry-content"><p>I have been coding the utility functions for matrices and vectors which we are/will need frequently in further functionalities.  <br/>
 One of it is to <code>add_constant</code> to a matrix. <code>add_constant</code> prepends or appends a column of ones to a matrix if it already doesn&#8217;t have one.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -208,136 +205,16 @@ Here are the final results:</p>
 Cheers, <br/>
 - Ankur Goel</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/20/kalman-and-cholesky-decomposition/">Kalman and Cholesky Decomposition</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">Ankur Goel</span></span>
 
-<time datetime="2013-08-20T14:06:00+05:30" pubdate data-updated="true">Aug 20<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hi everyone!</p>
-
-<p>First, this blog is coming a bit late than usual; sorry for that. I was traveling to my hometown(Delhi) for some occassion and couldn&#8217;t do much in last 3 days. I am thankful to Claudio for his support.</p>
-
-<p>So, in this phase, as discussed, we continue to compose estimation methods for <code>ARMA/ARIMA</code>. Good news - Most of method seem to be in place. Even if we manage to make atleast one or two; we seem to be in good position. Bad news - the estimation methods, I am hanging out with has lot of pre-requisitie. These requisites are both theoretical and technical. So, I&#8217;m currently initially coding them as I go. This comes with a plus. These methods will be extremely valuable in many other analysis. ;)</p>
-
-<h2>Kalman Fiter</h2>
-
-<p>So, we started up with developing Kalman filter. Kalman filter is one of the crucial method for ARIMA model fit. It is primarily identified with constitution of 3 matrices -</p>
-
-<ul>
-<li><em>T Matrix</em> : It is the coefficient matrix for the state vector in the state equation.</li>
-<li><em>R Matrix</em> : It is the coefficient matrix for the state vector in the observation equation.</li>
-<li><em>Z Matrix</em>: It is the selctor matrix.</li>
-</ul>
-
-
-<p>Currently, these methods are available as <code>class methods</code> of the new class - <code>KalmanFilter</code> in <code>ARIMA</code>. It can be found <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/arima.rb#L142">here</a></p>
-
-<p>The example snippet of T matrix code:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">T</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">p</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">arr</span> <span class="o">=</span> <span class="no">Matrix</span><span class="o">.</span><span class="n">zero</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">params_padded</span> <span class="o">=</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="ss">:scale</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">params_padded</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">p</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="n">k</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">(</span><span class="nb">p</span><span class="o">+</span><span class="n">k</span><span class="p">)</span><span class="o">]</span>
-</span><span class='line'>    <span class="n">intermediate_matrix</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>    <span class="c1">#appending an array filled with padded values in beginning</span>
-</span><span class='line'>    <span class="n">intermediate_matrix</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span><span class="n">params_padded</span><span class="o">]</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">#now generating column matrix for that:</span>
-</span><span class='line'>    <span class="n">arr</span> <span class="o">=</span> <span class="no">Matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="n">intermediate_matrix</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">arr_00</span> <span class="o">=</span> <span class="n">arr</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="o">]</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">#identify matrix substituition in matrix except row[0] and column[0]</span>
-</span><span class='line'>    <span class="n">r</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
-</span><span class='line'>      <span class="n">arr</span><span class="o">[</span><span class="n">r</span><span class="p">,</span><span class="n">r</span><span class="o">]</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>    <span class="n">arr</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="n">arr_00</span>
-</span><span class='line'>    <span class="n">arr</span>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The complete coding of <code>R</code> matrix is still pending.</p>
-
-<h2>Cholesky Decomposition:</h2>
-
-<p>While venturing into another estimation method; I encoutered Cholesky decomposition of matrix; and it took me by surprise.
-<a href="http://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a> is the decomposition of a symmetric matrix in the product of lower half of Hermitian matrix and it&#8217;s conjugate.</p>
-
-<p>I implemented the following as extension of <code>Matrix</code> <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/utility.rb#L50">here</a>. Since the matrix has to be <strong>symmetric</strong> before it can be decomposed to Hermitian matrix, I also wrote down <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/utility.rb#L35"><code>is_symmetric?</code></a> method to check if the matrix is symmetric or not. Though <code>symmetric?</code> is present in Ruby Matrix 1.9+, to satisfy back compatibility with Ruby 1.8, it was necessary.</p>
-
-<p>That&#8217;s pretty much for now.</p>
-
-<p>Continuing the work.</p>
-
-<p>Cheers, <br/>
-- Ankur Goel</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/06/bio-statsample-timeseries-deliverables/">Bio-statsample-timeseries Deliverables</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -349,82 +226,32 @@ Cheers, <br/>
   
 
 
-<time datetime="2013-08-06T16:02:00+05:30" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
-        
-      </p>
+<time datetime="2013-09-01T17:15:00+05:30" pubdate data-updated="true">Sep 1<span>st</span>, 2013</time>
+      
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>Hi there!</p>
-
-<p>This summer, I&#8217;m working on new <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries"><code>bio-statsample-timeseries</code></a> gem. This will act as an extension to existing <a href="http://rubygems.org/gems/statsample"><code>Statsample</code></a> by Claudio Bustos. I aim to add the support of <strong>timeseries</strong> and related functionalities to it.</p>
-
-<p>I am using <code>MiniTest</code> for unit-testing and Cucumber for the feature testing. In the intial period of first phase, I targeted on completing as much portion of testing as possible for existing <code>Statsample</code>.</p>
-
-<p>Also, another goal is to make statsample supported by current and previous Ruby versions. We are taking care of that - <a href="https://travis-ci.org/AnkurGel/bioruby-statsample-timeseries">travis-ci.org/AnkurGel/bioruby-statsample-timeseries</a> by managing support of Ruby 2.0.0, 1.9.3, 1.9.2, jruby-19mode and rbx-19mode.</p>
-
-<p>Now, we have many basic and advanced functions in place for timeseries. We have enabled:</p>
-
-<ul>
-<li>Autocorrelation</li>
-<li>Partial autocorrelation with:
-
-<ul>
-<li>yule-walker</li>
-<li>levinson-durbin</li>
-<li>biased levinson-durbin</li>
-</ul>
-</li>
-<li>Autocovariance</li>
-<li>Lag and mean of series</li>
-<li>correlation (almost complete)</li>
-</ul>
-
-
-<p>Apart from them, we are also working on ARIMA module(another goal of project) and have realized the simulation of:</p>
-
-<ul>
-<li>AR (Autoregressive) model</li>
-<li>MA (Moving Average) model</li>
-<li>ARMA model</li>
-</ul>
-
-
-<p>For those simulations, the requisite was to pre-acquire the values of parameters against which the simulation was generated. For pure model, in this phase we aim to work and complete most of such functions to support that. We have completed:</p>
-
-<ul>
-<li>Yule-walker for AR modelling.</li>
-<li>Levinson-Durbin for AR modelling</li>
-</ul>
-
-
-<p>I will now start with other such modelling like <code>burg</code> algorithm and <code>IRLS</code>. :). <br/>
-The deliverables of project must be the all this stuff. Since the estimation methods for these modelling poses lot of theoretical and accuracy challenges, the pace to achieve them may not be too fast. :).</p>
-
-<h2>Documentation</h2>
-
-<p>One thing I liked in R and Statsmodels is amount of documentation and detail of API for developers and users. I wish to have similar amount of documentation for Statsample, so as to attract more number of Ruby developers and scientists. <br/>
-Considering the amount of code present in Statsample and bio-statsample-timeseries combined, maybe devoting considerable quality time for RDoc documentation will be a good idea!.</p>
-
-<h2>After</h2>
-
-<p>I already expressed my wish to continue contributing to project after timeline to Claudio. We will continue to work on it! On next module, if this is near completion. :)</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://AnkurGel.github.io/blog/2013/09/01/utility-functions-and-documentation/" data-via="ankurgel" data-counturl="http://AnkurGel.github.io/blog/2013/09/01/utility-functions-and-documentation/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/08/20/kalman-and-cholesky-decomposition/" title="Previous Post: Kalman and Cholesky decomposition">&laquo; Kalman and Cholesky decomposition</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
+
 <aside class="sidebar">
   
     <section>
@@ -457,7 +284,7 @@ Considering the amount of code present in Statsample and bio-statsample-timeseri
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/ankurgel">@ankurgel</a> on GitHub
@@ -489,6 +316,7 @@ Considering the amount of code present in Statsample and bio-statsample-timeseri
 
   
 </aside>
+
 
     </div>
   </div>
