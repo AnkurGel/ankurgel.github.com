@@ -4,7 +4,7 @@
   <title><![CDATA[Ankur Goel]]></title>
   <link href="http://AnkurGel.github.io/atom.xml" rel="self"/>
   <link href="http://AnkurGel.github.io/"/>
-  <updated>2013-09-01T17:41:19+05:30</updated>
+  <updated>2013-09-17T16:38:47+05:30</updated>
   <id>http://AnkurGel.github.io/</id>
   <author>
     <name><![CDATA[Ankur Goel]]></name>
@@ -12,6 +12,114 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Kalman filter, Log Likelihood and Minimization]]></title>
+    <link href="http://AnkurGel.github.io/blog/2013/09/14/kalman-filter/"/>
+    <updated>2013-09-14T23:54:00+05:30</updated>
+    <id>http://AnkurGel.github.io/blog/2013/09/14/kalman-filter</id>
+    <content type="html"><![CDATA[<p>Last two weeks have been a rollercoaster ride. <br/>
+We have wrote the extensive modules for <strong>KalmanFilter</strong>(<code>Statsample::TimeSeries::Arima::KalmanFilter</code>) and <strong>LogLikelihood</strong>(<code>Statsample::TimeSeries::Arima::KF::LogLikelihood</code>).</p>
+
+<p>I am way too grateful to Claudio for his uber-awesome support and guidance. While implementing log-likelihood, I understood why he asked me to go through <code>GSL</code> <a href="http://rb-gsl.rubyforge.org/files/rdoc/multimin_rdoc.html">minimization</a> at the first place. Thanks! :)</p>
+
+<p><em>KalmanFilter</em> enables us to find the ARIMA(p, d, q) of series where,</p>
+
+<ul>
+<li><strong>p</strong> = Order of Autoregressive part.</li>
+<li><strong>d</strong> = Integerated part.</li>
+<li><strong>q</strong> = Order of Moving Average part.</li>
+</ul>
+
+
+<p>The filter finds the autoregressive and moving average coefficients for the given series and orders. <br/>
+In the previous phase, we were working on the simulations of ARIMA model and manually provided the <code>phi</code> and <code>theta</code> coefficients to the simulator.<br/>
+The KalmanFilter removes that dependency, by <em>simplex</em> algorithm minimizing approach on the log likelihood of the series, it successfully finds the ARIMA of a given series.</p>
+
+<p><strong>Use Case:</strong></p>
+
+<figure class='code'><figcaption><span>KalmanFilter example</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#Make a timeseries. Below is random series</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;bio-statsample-timeseries&#39;</span>
+</span><span class='line'><span class="n">ts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">200</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">rand</span> <span class="p">}</span><span class="o">.</span><span class="n">to_ts</span>
+</span><span class='line'>
+</span><span class='line'><span class="kp">include</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:TimeSeries</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#generate kalman filter object for ARIMA(2, 0, 1)</span>
+</span><span class='line'><span class="n">kf</span> <span class="o">=</span> <span class="no">ARIMA</span><span class="o">.</span><span class="n">ks</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#AR Coeffs:</span>
+</span><span class='line'><span class="n">kf</span><span class="o">.</span><span class="n">ar</span>
+</span><span class='line'><span class="c1">#=&gt; [0.26666666666666666, 0.3666666666666667]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#kf.ma</span>
+</span><span class='line'><span class="c1">#=&gt; =&gt; [0.13333333333333336]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The source code of <code>KalmanFilter</code> can be found <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/arima/kalman.rb">here</a>.</p>
+
+<p>Now, as name depicts, <code>LogLikelihood</code> generates log-likelihood and few other attributes of the series.  <br/>
+With the <code>LogLikelihood</code> class, we are generating many internal matrices(we even added few utility functions to make computation easier <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/utility.rb#L23">here</a>). With this class, on given coefficients, order and series, we are able to calculate sigma, log-likelihood and AIC(Akaike Information Criterion) of the series.</p>
+
+<p>LogLikelihood is the important class, since this is the function which is repeatedly minimized in KalmanFilter, which in turn generates the estimated parameters for ARIMA.</p>
+
+<p><strong>Use Case:</strong></p>
+
+<figure class='code'><figcaption><span>LogLikelihood example</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#continuing with example above</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">l</span> <span class="o">=</span> <span class="ss">Arima</span><span class="p">:</span><span class="ss">:KF</span><span class="o">::</span><span class="no">LogLikelihood</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">kf</span><span class="o">.</span><span class="n">ar</span><span class="o">+</span><span class="n">kf</span><span class="o">.</span><span class="n">ma</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="c1">#  =&gt; LogLikelihood(p = 2, q = 1) on params: [0.26666666666666666, 0.3666666666666667, 0.13333333333333336]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">l</span><span class="o">.</span><span class="n">log_likelihood</span>
+</span><span class='line'><span class="c1">#  =&gt; -81.50161474755537</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">l</span><span class="o">.</span><span class="n">sigma</span>
+</span><span class='line'><span class="c1">#  =&gt; 0.13135393469540402</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">l</span><span class="o">.</span><span class="n">aic</span>
+</span><span class='line'><span class="c1">#  =&gt; 171.00322949511073</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The source code of <code>LogLikelihood</code> can be found <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/arima/likelihood.rb">here</a></p>
+
+<p>The <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/test/test_arima_ks.rb">tests</a> for both passes all the case.  <br/>
+In between, we have covered the detailed documentation of pretty much everything in bio-statsample-timeseries.</p>
+
+<p>With that, we have also bumped our version. Go, <a href="http://rubygems.org/gems/bio-statsample-timeseries"><code>gem install bio-statsample-timeseries</code></a></p>
+
+<p>Cheers, <br/>
+Ankur Goel</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Utility functions and Documentation]]></title>

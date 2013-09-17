@@ -9,7 +9,7 @@
   <meta name="author" content="Ankur Goel">
 
   
-  <meta name="description" content="As discussed, I am implementing estimation methods for phi in AR modelling. We covered yule_walker earlier, I&#8217;ll write a post about that. After &hellip;">
+  <meta name="description" content="Hi there! This summer, I&#8217;m working on new bio-statsample-timeseries gem. This will act as an extension to existing Statsample by Claudio Bustos &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,95 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/06/bio-statsample-timeseries-deliverables/">Bio-statsample-timeseries Deliverables</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-06T16:02:00+05:30" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hi there!</p>
+
+<p>This summer, I&#8217;m working on new <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries"><code>bio-statsample-timeseries</code></a> gem. This will act as an extension to existing <a href="http://rubygems.org/gems/statsample"><code>Statsample</code></a> by Claudio Bustos. I aim to add the support of <strong>timeseries</strong> and related functionalities to it.</p>
+
+<p>I am using <code>MiniTest</code> for unit-testing and Cucumber for the feature testing. In the intial period of first phase, I targeted on completing as much portion of testing as possible for existing <code>Statsample</code>.</p>
+
+<p>Also, another goal is to make statsample supported by current and previous Ruby versions. We are taking care of that - <a href="https://travis-ci.org/AnkurGel/bioruby-statsample-timeseries">travis-ci.org/AnkurGel/bioruby-statsample-timeseries</a> by managing support of Ruby 2.0.0, 1.9.3, 1.9.2, jruby-19mode and rbx-19mode.</p>
+
+<p>Now, we have many basic and advanced functions in place for timeseries. We have enabled:</p>
+
+<ul>
+<li>Autocorrelation</li>
+<li>Partial autocorrelation with:
+
+<ul>
+<li>yule-walker</li>
+<li>levinson-durbin</li>
+<li>biased levinson-durbin</li>
+</ul>
+</li>
+<li>Autocovariance</li>
+<li>Lag and mean of series</li>
+<li>correlation (almost complete)</li>
+</ul>
+
+
+<p>Apart from them, we are also working on ARIMA module(another goal of project) and have realized the simulation of:</p>
+
+<ul>
+<li>AR (Autoregressive) model</li>
+<li>MA (Moving Average) model</li>
+<li>ARMA model</li>
+</ul>
+
+
+<p>For those simulations, the requisite was to pre-acquire the values of parameters against which the simulation was generated. For pure model, in this phase we aim to work and complete most of such functions to support that. We have completed:</p>
+
+<ul>
+<li>Yule-walker for AR modelling.</li>
+<li>Levinson-Durbin for AR modelling</li>
+</ul>
+
+
+<p>I will now start with other such modelling like <code>burg</code> algorithm and <code>IRLS</code>. :). <br/>
+The deliverables of project must be the all this stuff. Since the estimation methods for these modelling poses lot of theoretical and accuracy challenges, the pace to achieve them may not be too fast. :).</p>
+
+<h2>Documentation</h2>
+
+<p>One thing I liked in R and Statsmodels is amount of documentation and detail of API for developers and users. I wish to have similar amount of documentation for Statsample, so as to attract more number of Ruby developers and scientists. <br/>
+Considering the amount of code present in Statsample and bio-statsample-timeseries combined, maybe devoting considerable quality time for RDoc documentation will be a good idea!.</p>
+
+<h2>After</h2>
+
+<p>I already expressed my wish to continue contributing to project after timeline to Claudio. We will continue to work on it! On next module, if this is near completion. :)</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -362,139 +451,6 @@ For <code>ARMA(1, 1)</code> process, here are the comparisons of the visualizati
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/07/18/ar-and-ma-simulations/">AR and MA Simulations</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-18T18:56:00+05:30" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I have been reading and coding <strong>AR(Autoregressive Model)</strong> and <strong>Moving Average(MA)</strong> basics. <br/>
-First, I am very grateful for all the patience by Claudio Bustos to help me with understanding this. There is still lot to be learnt in these models, but I will keep bugging him. :D</p>
-
-<p>We wrote the simulations for <code>AR(p)</code> and <code>MA(q)</code>. The idea behind creating them is to first simulate the process with known coefficients and then move on to write ARMA process which could also estimate the coefficients.</p>
-
-<h2>Autoregressive Model</h2>
-
-<p>This model is represented by <strong>AR(p)</strong> where p is the order of this model. For a pure autoregressive model, we consider order of moving average model as 0.</p>
-
-<p><code>AR(p)</code> is represented by the following equation:</p>
-
-<p><img src="http://upload.wikimedia.org/math/f/0/6/f06ba0e2d8668944406852d7f72ac2f1.png" alt="Courtesy: Wikipedia" /></p>
-
-<p>Here, <img src="http://upload.wikimedia.org/math/a/3/4/a34ff7b33cb6b9dee064215437f52349.png" alt="" /> are the parameters of model, and <img src="http://upload.wikimedia.org/math/1/5/8/158300cdcfab79e14b49519a9c907ab9.png" alt="" /> is the error noise. <br/>
-To realize this model, we have to observe and keep track of previous <code>x(t)</code> values, and realize current value with observed summation and error noise.</p>
-
-<h4>Here is that code fragment of general AR(p) simulator:</h4>
-
-<ul>
-<li>It creates a buffer initially to prevent &#8216;broken values&#8217;, and trims that buffer before returning the result.</li>
-<li>It goes on to create the backshifts vector. The backshift vector depends on the ongoing iteration from <code>(1..n)</code>.</li>
-<li>After creating backshifts vector, it extracts the required <code>phi</code> values from the stack.</li>
-<li>Then it performs vector multiplication - <code>backshifts * parameters</code>, then adds the result.</li>
-<li>The current <code>x(t)</code> values is then returned with active white noise.</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">ar_sim</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">err_nor</span> <span class="o">=</span> <span class="ss">Distribution</span><span class="p">:</span><span class="ss">:Normal</span><span class="o">.</span><span class="n">rng</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
-</span><span class='line'>  <span class="c1">#creating buffer with 10 random values</span>
-</span><span class='line'>  <span class="n">buffer</span> <span class="o">=</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">err_nor</span><span class="o">.</span><span class="n">call</span><span class="p">())</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">x</span> <span class="o">=</span> <span class="n">buffer</span> <span class="o">+</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">#For now &quot;phi&quot; are the known model parameters</span>
-</span><span class='line'>  <span class="c1">#later we will obtain it by Yule-walker/Burg</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="mi">11</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">11</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">phi</span><span class="o">.</span><span class="n">size</span>
-</span><span class='line'>      <span class="c1">#dependent on previous accumulation of x</span>
-</span><span class='line'>      <span class="n">backshifts</span> <span class="o">=</span> <span class="n">create_vector</span><span class="p">(</span><span class="n">x</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">i</span><span class="o">].</span><span class="n">reverse</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">else</span>
-</span><span class='line'>      <span class="c1">#dependent on number of phi size/order</span>
-</span><span class='line'>      <span class="n">backshifts</span> <span class="o">=</span> <span class="n">create_vector</span><span class="p">(</span><span class="n">x</span><span class="o">[</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">phi</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">i</span><span class="o">].</span><span class="n">reverse</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">create_vector</span><span class="p">(</span><span class="n">phi</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">backshifts</span><span class="o">.</span><span class="n">size</span><span class="o">]</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">summation</span> <span class="o">=</span> <span class="p">(</span><span class="n">backshifts</span> <span class="o">*</span> <span class="n">parameters</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:+</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">x</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">summation</span> <span class="o">+</span> <span class="n">err_nor</span><span class="o">.</span><span class="n">call</span><span class="p">()</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="n">x</span> <span class="o">-</span> <span class="n">buffer</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>    <br/>
-There are certain tests which will now be performed in context of <code>acf</code> and <code>pacf</code>, which I earlier coded. They form the basis of correctness of our autoregressive estimation. :) Expect the next post about those tests.</p>
-
-<h2>Moving Average Model</h2>
-
-<p>This model is represented by <strong>MA(q)</strong>, where <code>q</code> is the order of this model. Again, for pure moving-average model, we consider <code>p=0</code>.</p>
-
-<p>This is represented by following equation: <br/>
-<img src="https://upload.wikimedia.org/math/9/5/a/95a85ea60c0cd898823ffe17fb509475.png" alt="" /></p>
-
-<p>Unlike <em>autoregressive model</em>, this model was somewhat hard to obtain. It needs to obsere previous <em>error noise</em> instead of previous <code>x(t)</code> values. And the series largely depends upon the order of the model.</p>
-
-<p>It&#8217;s code can also be found on my <a href="https://github.com/ankurgel/statsample/tree/arima">github</a> branch.</p>
-
-<p>I am now currently working on those tests analysis, I mentioned; for various combinations of <code>AR(p)</code> and <code>MA(q)</code>. As they get over, I will move to realize few algorithms like <em>yule walker</em> and <em>burgs</em> for estimation of coefficients.</p>
-
-<p>Cheers, <br/>
--Ankur Goel</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -512,6 +468,10 @@ There are certain tests which will now be performed in context of <code>acf</cod
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/09/14/kalman-filter/">Kalman filter, Log Likelihood and Minimization</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/09/01/utility-functions-and-documentation/">Utility functions and Documentation</a>
       </li>
     
@@ -525,10 +485,6 @@ There are certain tests which will now be performed in context of <code>acf</cod
     
       <li class="post">
         <a href="/blog/2013/08/04/levinson-durbin-and-autocovariance/">Levinson-Durbin and Autocovariance</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/20/ar-ma-arma-acf-pacf-visualizations/">AR/MA, ARMA acf - pacf visualizations</a>
       </li>
     
   </ul>

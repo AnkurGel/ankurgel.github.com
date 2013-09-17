@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Kalman filter, Log Likelihood and Minimization - Ankur Goel</title>
+  <meta name="author" content="Ankur Goel">
+
+  
+  <meta name="description" content="Last two weeks have been a rollercoaster ride. We have wrote the extensive modules for KalmanFilter(Statsample::TimeSeries::Arima::KalmanFilter) and &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://AnkurGel.github.io/blog/2013/09/14/kalman-filter">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Ankur Goel" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Ankur Goel</a></h1>
+  
+    <h2>On hunt of awesomeness!</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:AnkurGel.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Kalman Filter, Log Likelihood and Minimization</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-14T23:54:00+05:30" pubdate data-updated="true">Sep 14<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Last two weeks have been a rollercoaster ride. <br/>
+We have wrote the extensive modules for <strong>KalmanFilter</strong>(<code>Statsample::TimeSeries::Arima::KalmanFilter</code>) and <strong>LogLikelihood</strong>(<code>Statsample::TimeSeries::Arima::KF::LogLikelihood</code>).</p>
+
+<p>I am way too grateful to Claudio for his uber-awesome support and guidance. While implementing log-likelihood, I understood why he asked me to go through <code>GSL</code> <a href="http://rb-gsl.rubyforge.org/files/rdoc/multimin_rdoc.html">minimization</a> at the first place. Thanks! :)</p>
+
+<p><em>KalmanFilter</em> enables us to find the ARIMA(p, d, q) of series where,</p>
+
+<ul>
+<li><strong>p</strong> = Order of Autoregressive part.</li>
+<li><strong>d</strong> = Integerated part.</li>
+<li><strong>q</strong> = Order of Moving Average part.</li>
+</ul>
+
+
+<p>The filter finds the autoregressive and moving average coefficients for the given series and orders. <br/>
+In the previous phase, we were working on the simulations of ARIMA model and manually provided the <code>phi</code> and <code>theta</code> coefficients to the simulator.<br/>
+The KalmanFilter removes that dependency, by <em>simplex</em> algorithm minimizing approach on the log likelihood of the series, it successfully finds the ARIMA of a given series.</p>
+
+<p><strong>Use Case:</strong></p>
+
+<figure class='code'><figcaption><span>KalmanFilter example</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#Make a timeseries. Below is random series</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;bio-statsample-timeseries&#39;</span>
+</span><span class='line'><span class="n">ts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">200</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">rand</span> <span class="p">}</span><span class="o">.</span><span class="n">to_ts</span>
+</span><span class='line'>
+</span><span class='line'><span class="kp">include</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:TimeSeries</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#generate kalman filter object for ARIMA(2, 0, 1)</span>
+</span><span class='line'><span class="n">kf</span> <span class="o">=</span> <span class="no">ARIMA</span><span class="o">.</span><span class="n">ks</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#AR Coeffs:</span>
+</span><span class='line'><span class="n">kf</span><span class="o">.</span><span class="n">ar</span>
+</span><span class='line'><span class="c1">#=&gt; [0.26666666666666666, 0.3666666666666667]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#kf.ma</span>
+</span><span class='line'><span class="c1">#=&gt; =&gt; [0.13333333333333336]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The source code of <code>KalmanFilter</code> can be found <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/arima/kalman.rb">here</a>.</p>
+
+<p>Now, as name depicts, <code>LogLikelihood</code> generates log-likelihood and few other attributes of the series.  <br/>
+With the <code>LogLikelihood</code> class, we are generating many internal matrices(we even added few utility functions to make computation easier <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/utility.rb#L23">here</a>). With this class, on given coefficients, order and series, we are able to calculate sigma, log-likelihood and AIC(Akaike Information Criterion) of the series.</p>
+
+<p>LogLikelihood is the important class, since this is the function which is repeatedly minimized in KalmanFilter, which in turn generates the estimated parameters for ARIMA.</p>
+
+<p><strong>Use Case:</strong></p>
+
+<figure class='code'><figcaption><span>LogLikelihood example</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#continuing with example above</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">l</span> <span class="o">=</span> <span class="ss">Arima</span><span class="p">:</span><span class="ss">:KF</span><span class="o">::</span><span class="no">LogLikelihood</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">kf</span><span class="o">.</span><span class="n">ar</span><span class="o">+</span><span class="n">kf</span><span class="o">.</span><span class="n">ma</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="c1">#  =&gt; LogLikelihood(p = 2, q = 1) on params: [0.26666666666666666, 0.3666666666666667, 0.13333333333333336]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">l</span><span class="o">.</span><span class="n">log_likelihood</span>
+</span><span class='line'><span class="c1">#  =&gt; -81.50161474755537</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">l</span><span class="o">.</span><span class="n">sigma</span>
+</span><span class='line'><span class="c1">#  =&gt; 0.13135393469540402</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">l</span><span class="o">.</span><span class="n">aic</span>
+</span><span class='line'><span class="c1">#  =&gt; 171.00322949511073</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The source code of <code>LogLikelihood</code> can be found <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/arima/likelihood.rb">here</a></p>
+
+<p>The <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/test/test_arima_ks.rb">tests</a> for both passes all the case.  <br/>
+In between, we have covered the detailed documentation of pretty much everything in bio-statsample-timeseries.</p>
+
+<p>With that, we have also bumped our version. Go, <a href="http://rubygems.org/gems/bio-statsample-timeseries"><code>gem install bio-statsample-timeseries</code></a></p>
+
+<p>Cheers, <br/>
+Ankur Goel</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Ankur Goel</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-14T23:54:00+05:30" pubdate data-updated="true">Sep 14<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://AnkurGel.github.io/blog/2013/09/14/kalman-filter/" data-via="ankurgel" data-counturl="http://AnkurGel.github.io/blog/2013/09/14/kalman-filter/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/09/01/utility-functions-and-documentation/" title="Previous Post: Utility functions and Documentation">&laquo; Utility functions and Documentation</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/09/14/kalman-filter/">Kalman filter, Log Likelihood and Minimization</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/01/utility-functions-and-documentation/">Utility functions and Documentation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/20/kalman-and-cholesky-decomposition/">Kalman and Cholesky decomposition</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/06/bio-statsample-timeseries-deliverables/">bio-statsample-timeseries Deliverables</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/04/levinson-durbin-and-autocovariance/">Levinson-Durbin and Autocovariance</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/ankurgel">@ankurgel</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'ankurgel',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Ankur Goel -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
