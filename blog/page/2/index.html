@@ -9,7 +9,7 @@
   <meta name="author" content="Ankur Goel">
 
   
-  <meta name="description" content="Hi there! This summer, I&#8217;m working on new bio-statsample-timeseries gem. This will act as an extension to existing Statsample by Claudio Bustos &hellip;">
+  <meta name="description" content="I have been coding the utility functions for matrices and vectors which we are/will need frequently in further functionalities. One of it is to &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -71,6 +71,268 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/09/01/utility-functions-and-documentation/">Utility Functions and Documentation</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-01T17:15:00+05:30" pubdate data-updated="true">Sep 1<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I have been coding the utility functions for matrices and vectors which we are/will need frequently in further functionalities.  <br/>
+One of it is to <code>add_constant</code> to a matrix. <code>add_constant</code> prepends or appends a column of ones to a matrix if it already doesn&#8217;t have one.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#=Adds a column of constants.</span>
+</span><span class='line'><span class="c1">#Appends a column of ones to the matrix/array if first argument is false</span>
+</span><span class='line'><span class="c1">#If an n-array, first checks if one column of ones is already present</span>
+</span><span class='line'><span class="c1">#if present, then original(self) is returned, else, prepends with a vector of ones</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">add_constant</span><span class="p">(</span><span class="n">prepend</span> <span class="o">=</span> <span class="kp">true</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1">#for Matrix</span>
+</span><span class='line'>  <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">column_size</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:to_f</span><span class="p">)</span> <span class="o">==</span> <span class="ss">Object</span><span class="p">:</span><span class="ss">:Vector</span><span class="o">.</span><span class="n">elements</span><span class="p">(</span><span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">row_size</span><span class="p">,</span> <span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="p">))</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nb">self</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="c1">#append/prepend a column of one&#39;s</span>
+</span><span class='line'>  <span class="n">vectors</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">row_size</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">prepend</span>
+</span><span class='line'>      <span class="o">[</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">].</span><span class="n">concat</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="nb">self</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">return</span> <span class="no">Matrix</span><span class="o">.</span><span class="n">rows</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are other such methods such as <code>chain_dot</code> which carries out dot multplication of matrices in chain. It uses the ruby&#8217;s <code>reduce</code> ability to reduce the available arguments(matrices) to consequential product.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#=Chain Product</span>
+</span><span class='line'><span class="c1">#Class method</span>
+</span><span class='line'><span class="c1">#Returns the chain product of two matrices</span>
+</span><span class='line'><span class="c1">#==Usage:</span>
+</span><span class='line'><span class="c1">#Let `a` be 4 * 3 matrix, </span>
+</span><span class='line'><span class="c1">#Let `b` be 3 * 3 matrix, </span>
+</span><span class='line'><span class="c1">#Let `c` be 3 * 1 matrix,</span>
+</span><span class='line'><span class="c1">#then `Matrix.chain_dot(a, b, c)`</span>
+</span><span class='line'><span class="c1">#===*NOTE*: Send the matrices in multiplicative order with proper dimensions</span>
+</span><span class='line'><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">chain_dot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1">#inspired by Statsmodels</span>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="n">args</span><span class="o">.</span><span class="n">reduce</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="p">}</span> <span class="c1">#perform matrix multiplication in order</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="ss">ExceptionForMatrix</span><span class="p">:</span><span class="ss">:ErrDimensionMismatch</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;ExceptionForMatrix: Please provide matrices with proper multiplicative dimensions&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Apart from adding such functionalities, I have covered entire <em>documentation</em> of <code>statsample-timeseries</code>. I made sure to explain role of each function, every input parameter, and return type of the function. In most of the cases, I also added the usage examples too. <br/>
+Later, I will add the usage examples in all those which are still not equipped with that and details about parameters wherever it is still missing.</p>
+
+<p>After this, with the great help from Claudio and Ra&#8217;s <a href="https://github.com/AnkurGel/statsample-timeseries/issues/2">pointers</a> about modular(namespace) hierarchial convention; we managed to make it more conventional. :) <br/>
+Here are the final results:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Statsample::TimeSeries</span> <span class="c1">#Module for all Timeseries related stuff</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Statsample</span><span class="o">::</span><span class="ss">TimeSeries</span><span class="p">:</span><span class="ss">:Series</span> <span class="o">&lt;</span> <span class="ss">Statsmple</span><span class="p">:</span><span class="ss">:Vector</span>  <span class="c1"># Class containing a timeseries objects and general related methods</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">Statsample::TimeSeries::Pacf</span> <span class="c1">#Pacf related methods</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Statsample</span><span class="o">::</span><span class="ss">TimeSeries</span><span class="p">:</span><span class="ss">:Arima</span> <span class="c1">#Arima class, which is initialized by class method</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Statsample</span><span class="o">::</span><span class="ss">TimeSeries</span><span class="p">:</span><span class="ss">:Arima</span><span class="o">::</span><span class="no">KalmanFilter</span> <span class="c1"># For Kalman Filter on ARIMA</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We are now reading and continuing to code Kalman filter. Hope it doesn&#8217;t stay tricky. :)</p>
+
+<p>Till next time, <br/>
+Cheers, <br/>
+- Ankur Goel</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/20/kalman-and-cholesky-decomposition/">Kalman and Cholesky Decomposition</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-20T14:06:00+05:30" pubdate data-updated="true">Aug 20<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hi everyone!</p>
+
+<p>First, this blog is coming a bit late than usual; sorry for that. I was traveling to my hometown(Delhi) for some occassion and couldn&#8217;t do much in last 3 days. I am thankful to Claudio for his support.</p>
+
+<p>So, in this phase, as discussed, we continue to compose estimation methods for <code>ARMA/ARIMA</code>. Good news - Most of method seem to be in place. Even if we manage to make atleast one or two; we seem to be in good position. Bad news - the estimation methods, I am hanging out with has lot of pre-requisitie. These requisites are both theoretical and technical. So, I&#8217;m currently initially coding them as I go. This comes with a plus. These methods will be extremely valuable in many other analysis. ;)</p>
+
+<h2>Kalman Fiter</h2>
+
+<p>So, we started up with developing Kalman filter. Kalman filter is one of the crucial method for ARIMA model fit. It is primarily identified with constitution of 3 matrices -</p>
+
+<ul>
+<li><em>T Matrix</em> : It is the coefficient matrix for the state vector in the state equation.</li>
+<li><em>R Matrix</em> : It is the coefficient matrix for the state vector in the observation equation.</li>
+<li><em>Z Matrix</em>: It is the selctor matrix.</li>
+</ul>
+
+
+<p>Currently, these methods are available as <code>class methods</code> of the new class - <code>KalmanFilter</code> in <code>ARIMA</code>. It can be found <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/lib/statsample-timeseries/arima.rb#L142">here</a></p>
+
+<p>The example snippet of T matrix code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">T</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">p</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">arr</span> <span class="o">=</span> <span class="no">Matrix</span><span class="o">.</span><span class="n">zero</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">params_padded</span> <span class="o">=</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="ss">:scale</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">params_padded</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">p</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="n">k</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">(</span><span class="nb">p</span><span class="o">+</span><span class="n">k</span><span class="p">)</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">intermediate_matrix</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>    <span class="c1">#appending an array filled with padded values in beginning</span>
+</span><span class='line'>    <span class="n">intermediate_matrix</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span><span class="n">params_padded</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">#now generating column matrix for that:</span>
+</span><span class='line'>    <span class="n">arr</span> <span class="o">=</span> <span class="no">Matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="n">intermediate_matrix</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">arr_00</span> <span class="o">=</span> <span class="n">arr</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">#identify matrix substituition in matrix except row[0] and column[0]</span>
+</span><span class='line'>    <span class="n">r</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">arr</span><span class="o">[</span><span class="n">r</span><span class="p">,</span><span class="n">r</span><span class="o">]</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">arr</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="n">arr_00</span>
+</span><span class='line'>    <span class="n">arr</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The complete coding of <code>R</code> matrix is still pending.</p>
+
+<h2>Cholesky Decomposition:</h2>
+
+<p>While venturing into another estimation method; I encoutered Cholesky decomposition of matrix; and it took me by surprise.
+<a href="http://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a> is the decomposition of a symmetric matrix in the product of lower half of Hermitian matrix and it&#8217;s conjugate.</p>
+
+<p>I implemented the following as extension of <code>Matrix</code> <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/lib/statsample-timeseries/utility.rb#L50">here</a>. Since the matrix has to be <strong>symmetric</strong> before it can be decomposed to Hermitian matrix, I also wrote down <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/lib/statsample-timeseries/utility.rb#L35"><code>is_symmetric?</code></a> method to check if the matrix is symmetric or not. Though <code>symmetric?</code> is present in Ruby Matrix 1.9+, to satisfy back compatibility with Ruby 1.8, it was necessary.</p>
+
+<p>That&#8217;s pretty much for now.</p>
+
+<p>Continuing the work.</p>
+
+<p>Cheers, <br/>
+- Ankur Goel</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/08/06/bio-statsample-timeseries-deliverables/">Bio-statsample-timeseries Deliverables</a></h1>
     
     
@@ -96,11 +358,11 @@
 
   <div class="entry-content"><p>Hi there!</p>
 
-<p>This summer, I&#8217;m working on new <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries"><code>bio-statsample-timeseries</code></a> gem. This will act as an extension to existing <a href="http://rubygems.org/gems/statsample"><code>Statsample</code></a> by Claudio Bustos. I aim to add the support of <strong>timeseries</strong> and related functionalities to it.</p>
+<p>This summer, I&#8217;m working on new <a href="https://github.com/AnkurGel/statsample-timeseries"><code>statsample-timeseries</code></a> gem. This will act as an extension to existing <a href="http://rubygems.org/gems/statsample"><code>Statsample</code></a> by Claudio Bustos. I aim to add the support of <strong>timeseries</strong> and related functionalities to it.</p>
 
 <p>I am using <code>MiniTest</code> for unit-testing and Cucumber for the feature testing. In the intial period of first phase, I targeted on completing as much portion of testing as possible for existing <code>Statsample</code>.</p>
 
-<p>Also, another goal is to make statsample supported by current and previous Ruby versions. We are taking care of that - <a href="https://travis-ci.org/AnkurGel/bioruby-statsample-timeseries">travis-ci.org/AnkurGel/bioruby-statsample-timeseries</a> by managing support of Ruby 2.0.0, 1.9.3, 1.9.2, jruby-19mode and rbx-19mode.</p>
+<p>Also, another goal is to make statsample supported by current and previous Ruby versions. We are taking care of that - <a href="https://travis-ci.org/AnkurGel/statsample-timeseries">travis-ci.org/AnkurGel/statsample-timeseries</a> by managing support of Ruby 2.0.0, 1.9.3, 1.9.2, jruby-19mode and rbx-19mode.</p>
 
 <p>Now, we have many basic and advanced functions in place for timeseries. We have enabled:</p>
 
@@ -143,307 +405,11 @@ The deliverables of project must be the all this stuff. Since the estimation met
 <h2>Documentation</h2>
 
 <p>One thing I liked in R and Statsmodels is amount of documentation and detail of API for developers and users. I wish to have similar amount of documentation for Statsample, so as to attract more number of Ruby developers and scientists. <br/>
-Considering the amount of code present in Statsample and bio-statsample-timeseries combined, maybe devoting considerable quality time for RDoc documentation will be a good idea!.</p>
+Considering the amount of code present in Statsample and statsample-timeseries combined, maybe devoting considerable quality time for RDoc documentation will be a good idea!.</p>
 
 <h2>After</h2>
 
 <p>I already expressed my wish to continue contributing to project after timeline to Claudio. We will continue to work on it! On next module, if this is near completion. :)</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/04/levinson-durbin-and-autocovariance/">Levinson-Durbin and Autocovariance</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-04T16:02:00+05:30" pubdate data-updated="true">Aug 4<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>As discussed, I am implementing estimation methods for <code>phi</code> in <code>AR</code> modelling. We covered <code>yule_walker</code> earlier, I&#8217;ll write a post about that. After it&#8217;s implementation, we go ahead with another estimation method - <strong>Levinson Durbin</strong></p>
-
-<p><a href="http://en.wikipedia.org/wiki/Levinson_recursion">Levinson-Durbin</a> requires timeline series to be demeaned(<code>series = series - series.mean</code>) and it&#8217;s autocovavirance.</p>
-
-<p>Autocovariance of series is represented by summation of summation of product of series with series at lag <code>k</code>. That is, summation of <code>(x_i * x_{i+lag})</code>. It is also directly related with <code>acf</code> of series as <code>acf(k) = acvf(h) / acvf(0)</code>. It&#8217;s code can now be found in <code>Statsample::TimeSeries</code>&#8217;s <code>acvf</code> method.</p>
-
-<p>Now, with the help of autocovariance series, our <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/timeseries/pacf.rb#L16"><code>levinson_durbin</code></a> function recursively computes the following parameters:</p>
-
-<ul>
-<li>sigma_v : estimation of error variance</li>
-<li>arcoefs : AR phi values for timeseries</li>
-<li>pac     : unbiased levinson pacf estiation</li>
-<li>sigma   : sigma for AR.</li>
-</ul>
-
-
-<p>L-D performs recursive matrix and vector multiplications to populate it&#8217;s toeplitz matrix. Here is some code depicting those manipulations:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>      <span class="n">order</span> <span class="o">=</span> <span class="n">nlags</span>
-</span><span class='line'>      <span class="n">phi</span> <span class="o">=</span> <span class="no">Matrix</span><span class="o">.</span><span class="n">zero</span><span class="p">(</span><span class="n">nlags</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">sig</span> <span class="o">=</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">nlags</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="c1">#setting initial point for recursion:</span>
-</span><span class='line'>      <span class="n">phi</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">series</span><span class="o">[</span><span class="mi">1</span><span class="o">]/</span><span class="n">series</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
-</span><span class='line'>      <span class="c1">#phi[1][1] = series[1]/series[0]</span>
-</span><span class='line'>      <span class="n">sig</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">series</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">-</span> <span class="n">phi</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span> <span class="o">*</span> <span class="n">series</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="mi">2</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">order</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="o">|</span>
-</span><span class='line'>        <span class="n">phi</span><span class="o">[</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">series</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">-</span> <span class="p">(</span><span class="ss">Statsample</span><span class="p">:</span><span class="ss">:Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">phi</span><span class="o">[</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span> <span class="o">*</span> <span class="n">series</span><span class="o">[</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">k</span><span class="o">].</span><span class="n">reverse</span><span class="o">.</span><span class="n">to_ts</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">)</span> <span class="o">/</span> <span class="n">sig</span><span class="o">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span>
-</span><span class='line'>        <span class="c1">#some serious refinement needed in above for matrix manipulation. Will do today</span>
-</span><span class='line'>        <span class="mi">1</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">j</span><span class="o">|</span>
-</span><span class='line'>          <span class="n">phi</span><span class="o">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="n">phi</span><span class="o">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="o">-</span> <span class="n">phi</span><span class="o">[</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="o">]</span> <span class="o">*</span> <span class="n">phi</span><span class="o">[</span><span class="n">k</span><span class="o">-</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>        <span class="n">sig</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="n">sig</span><span class="o">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">phi</span><span class="o">[</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="o">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Implementation can be found <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/timeseries/pacf.rb#L16">here</a>.</p>
-
-<p>Now, in this week, I will integrate this in AR modelling and perform some tests to verify the estimation. And will soon start with next estimation method :)</p>
-
-<p>Cheers, <br/>
-Ankur Goel</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/07/20/ar-ma-arma-acf-pacf-visualizations/">AR/MA, ARMA Acf - Pacf Visualizations</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-20T18:27:00+05:30" pubdate data-updated="true">Jul 20<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>As mentioned in <a href="http://ankurgoel.com/blog/2013/07/18/ar-and-ma-simulations/">previous post</a>, I have been working with Autoregressive and Moving Average simulations. <br/>
-To test the correctness of estimations by our simulations, we employ <em>acf</em>(Autocorrelation) and <em>pacf</em>(partial autocorrelation) to our use. For different order of AR and MA, we get the varying visualizations with them, such as:</p>
-
-<ul>
-<li>Exponential decreasing curves.</li>
-<li>Damped sine waves.</li>
-<li>Positive and negative spikes, etc.</li>
-</ul>
-
-
-<p>While analyzing and writing tests for same, I also took some time to visualize that data on ilne and bar charts to get a clearer picture:</p>
-
-<h2>AR(1) process</h2>
-
-<p>AR(1) process is the autoregressive simulation with order p = 1, i.e, with one value of phi.<br/>
-Ideal AR(p) process is represented by: <br/>
-<img src="http://upload.wikimedia.org/math/f/0/6/f06ba0e2d8668944406852d7f72ac2f1.png" alt="Courtesy: Wikipedia" /> <br/>
-To simulate this, install <a href="http://github.com/AnkurGel/bioruby-statsample-timeseries"><code>bio-statsample-timeseries</code></a> from here.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;bio-statsample-timeseries&#39;</span>
-</span><span class='line'><span class="kp">include</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:ARIMA</span>
-</span><span class='line'><span class="n">series</span> <span class="o">=</span> <span class="no">ARIMA</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'><span class="n">ar_1</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">ar_sim</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">9</span><span class="o">]</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Here, number of observations, <strong>n</strong> = 1500 (greater value is preferrable for best fit), p = 1, with <em>phi</em> = [0.9].</p>
-
-<h3>ACF</h3>
-
-<p>To generate it&#8217;s autocorrelation</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">acf</span> <span class="o">=</span> <span class="n">ar_1</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">acf</span>
-</span><span class='line'><span class="nb">p</span> <span class="n">acf</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>For an AR(1) process, <code>acf</code> must exponentially decay if <code>phi &gt; 0</code>, or alternate in sign if <code>phi &lt; 0</code><a href="https://www.scss.tcd.ie/Rozenn.Dahyot/ST7005/11ACFPACF.pdf">Ref</a>. Go through the analysis above. It can be visualized as:  <br/>
-When <code>phi &gt; 0</code>, acf decreases exponentially:  <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_positive_phi_acf.png" alt="AR(1) positive phi acf" />
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_positive_phi_acf_line.png" alt="AR(1) positive phi acf line chart" /> <br/>
-When <code>phi &lt; 0</code>, you get the alternate acf lags:  <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_negative_phi_acf.png" alt="AR(1) negative phi acf" />
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_negative_phi_acf_line.png" alt="AR(1) negative phi acf line chart" /></p>
-
-<h3>PACF</h3>
-
-<p>To generate it&#8217;s partial autocorrelation:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">pacf</span> <span class="o">=</span> <span class="n">ar_1</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">pacf</span>
-</span><span class='line'><span class="nb">p</span> <span class="n">pacf</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>For AR(1) process, <code>pacf</code> must have a spike at lag 1, then 0. Former spike must be positive if <code>phi &gt; 0</code>, otherwise, negative spike. Have a look at the pacf series generated above. On visualizing the data:  <br/>
-When <code>phi &gt; 0</code>, positive lag at 1 and 0(contains 1.0):  <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_postive_phi_pacf.png" alt="AR(1) positive phi pacf" />
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_postive_phi_pacf_line.png" alt="AR(1) positive phi pacf line chart" /> <br/>
-When <code>phi &lt; 0</code>, negative lag at 1:  <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%281%29_negative_phi_pacf.png" alt="AR(1) negative phi pacf bar chart" /></p>
-
-<p>Here is the representation of ideal acf-vs-pacf for positive phi in AR(1): <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/ar1_postive_acf_vs_pacf.png" alt="AR(1) acf/pacf" /></p>
-
-<h2>AR(P) process</h2>
-
-<p>Simulation of AR(p) process is similar as AR(1).</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">series</span> <span class="o">=</span> <span class="no">ARIMA</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'><span class="n">phi_params</span> <span class="o">=</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="o">.</span><span class="mi">3</span><span class="o">]</span>
-</span><span class='line'><span class="n">ar_p</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">ar_sim</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="n">phi_params</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-</span><span class='line'><span class="c1">#acf</span>
-</span><span class='line'><span class="n">acf</span> <span class="o">=</span> <span class="n">ar_p</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">acf</span>
-</span><span class='line'><span class="n">pacf</span> <span class="o">=</span> <span class="n">ar_p</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">pacf</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ACF</h3>
-
-<p>For AR(p), <code>acf</code> must give a damping sine wave. The pattern is greatly dependent on the value and sign of phi parameters. <br/>
-When positive content in phi coefficients is more, you will get a sine wave starting from positive side, else, sine wave will start from negative side.  <br/>
-Notice, the damping sine wave starting from positive side here:  <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%28p%29_positive_phi_sine_wave.png" alt="AR(p) positive" /> <br/>
-and negative side here.. <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%28p%29_negative_phi_acf_sine_wave.png" alt="AR(p) negative" /></p>
-
-<h3>PACF</h3>
-
-<p><code>pacf</code> gives spike at lag 0(value = 1.0, default) and from lag 1 to lag k. The example above, features AR(2) process, for this, we must get spikes at lag 1 - 2 as: <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/AR%28p%29_positive_phi_pacf_spikes.png" alt="AR(p) pacf spikes" /></p>
-
-<h2>MA(1) process</h2>
-
-<p>MA(1) process is the moving average simulation with order <code>q = 1</code>, i.e, with one value of <code>theta</code>.<br/>
-To simulate this, use <code>ma_sim</code> method from <code>Statsample::ARIMA::ARIMA</code></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;bio-statsample-timeseries&#39;</span>
-</span><span class='line'><span class="kp">include</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:ARIMA</span>
-</span><span class='line'><span class="n">series</span> <span class="o">=</span> <span class="no">ARIMA</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'><span class="n">ma_1</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">ma_sim</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">9</span><span class="o">]</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-</span><span class='line'><span class="n">acf</span> <span class="o">=</span> <span class="n">ma_1</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">acf</span>
-</span><span class='line'><span class="n">pacf</span> <span class="o">=</span> <span class="n">ma_1</span><span class="o">.</span><span class="n">to_ts</span><span class="o">.</span><span class="n">pacf</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>For <code>theta &gt; 0</code>, for <code>MA(1)</code>, we must get a positive spike at lag 1 as: <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/MA%281%29_postive_acf.png" alt="MA(1) positive acf" />
-For <code>theta &lt; 0</code>, the spike at lag 1 must be in negatie direction as: <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/MA%281%29_negative_acf.png" alt="MA(1) negative acf" /></p>
-
-<p>When I put these two visualizations aside each other, the visualization seems quite fit: <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/MA%281%29_acf_positive_vs_negative.png" alt="MA(1) positive/negative" /></p>
-
-<h2>MA(q) process</h2>
-
-<p>MA(q) process. <code>Order = q</code> => Number of theta coefficients = q. <br/>
-Ideal MA(q) process is represented by:  <br/>
-<img src="https://upload.wikimedia.org/math/9/5/a/95a85ea60c0cd898823ffe17fb509475.png" alt="MA(q) Courtesy: Wiki" /></p>
-
-<h3>ACF</h3>
-
-<p>Similar to AR(1) simulation, it will have spikes for lag 1 - lag p as : <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/MA%28q%29_acf_spikes.png" alt="MA(1) acf" /></p>
-
-<h3>PACF</h3>
-
-<p>In pacf of MA(q) simulation, we observe exponentially decaying/damping sine wave. <br/>
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/MA%28q%29_paf_damped_sine_wave.png" alt="MA(q) pacf" /></p>
-
-<h2>ARMA(p, q) process</h2>
-
-<p>ARMA(p, q) is combination of autoregressive and moving average simulations. <br/>
-When <code>q = 0</code>, the process is called as pure autoregressive process; when <code>p = 0</code>, the process is purely moving average. <br/>
-The simulator of ARMA can be found as <code>arma_sim</code> in <code>Statsample::ARIMA::ARIMA</code>. <br/>
-For <code>ARMA(1, 1)</code> process, here are the comparisons of the visualizations from <code>R</code> and this code, which just made my day :)</p>
-
-<p><img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/ARMA/ARMA%281%2C1%29_R.png" alt="R ARMA(1, 1)" />
-<img src="https://dl.dropboxusercontent.com/u/102071534/sciruby/ARMA/ARMA%281%2C1%29_sim.png" alt="Statsample ARMA(1,1)" /></p>
-
-<p>Quite Fit!</p>
-
-<p>Cheers, <br/>
-- Ankur Goel</p>
 </div>
   
   
@@ -468,6 +434,14 @@ For <code>ARMA(1, 1)</code> process, here are the comparisons of the visualizati
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/10/16/statistics-with-ruby-timeseries-and-glm/">Statistics with Ruby - TimeSeries and GLM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/25/generalized-linear-models-and-refactoring/">Generalized Linear Models and refactoring</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/09/14/kalman-filter/">Kalman filter, Log Likelihood and Minimization</a>
       </li>
     
@@ -477,14 +451,6 @@ For <code>ARMA(1, 1)</code> process, here are the comparisons of the visualizati
     
       <li class="post">
         <a href="/blog/2013/08/20/kalman-and-cholesky-decomposition/">Kalman and Cholesky decomposition</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/06/bio-statsample-timeseries-deliverables/">bio-statsample-timeseries Deliverables</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/04/levinson-durbin-and-autocovariance/">Levinson-Durbin and Autocovariance</a>
       </li>
     
   </ul>
@@ -529,7 +495,7 @@ For <code>ARMA(1, 1)</code> process, here are the comparisons of the visualizati
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Ankur Goel -
+  Copyright &copy; 2014 - Ankur Goel -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

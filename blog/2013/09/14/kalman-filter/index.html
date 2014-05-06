@@ -127,7 +127,7 @@ The KalmanFilter removes that dependency, by <em>simplex</em> algorithm minimizi
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#Make a timeseries. Below is random series</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;bio-statsample-timeseries&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;statsample-timeseries&#39;</span>
 </span><span class='line'><span class="n">ts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">200</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">rand</span> <span class="p">}</span><span class="o">.</span><span class="n">to_ts</span>
 </span><span class='line'>
 </span><span class='line'><span class="kp">include</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:TimeSeries</span>
@@ -144,10 +144,10 @@ The KalmanFilter removes that dependency, by <em>simplex</em> algorithm minimizi
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The source code of <code>KalmanFilter</code> can be found <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/arima/kalman.rb">here</a>.</p>
+<p>The source code of <code>KalmanFilter</code> can be found <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/lib/statsample-timeseries/arima/kalman.rb">here</a>.</p>
 
 <p>Now, as name depicts, <code>LogLikelihood</code> generates log-likelihood and few other attributes of the series.  <br/>
-With the <code>LogLikelihood</code> class, we are generating many internal matrices(we even added few utility functions to make computation easier <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/utility.rb#L23">here</a>). With this class, on given coefficients, order and series, we are able to calculate sigma, log-likelihood and AIC(Akaike Information Criterion) of the series.</p>
+With the <code>LogLikelihood</code> class, we are generating many internal matrices(we even added few utility functions to make computation easier <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/lib/statsample-timeseries/utility.rb#L23">here</a>). With this class, on given coefficients, order and series, we are able to calculate sigma, log-likelihood and AIC(Akaike Information Criterion) of the series.</p>
 
 <p>LogLikelihood is the important class, since this is the function which is repeatedly minimized in KalmanFilter, which in turn generates the estimated parameters for ARIMA.</p>
 
@@ -182,12 +182,12 @@ With the <code>LogLikelihood</code> class, we are generating many internal matri
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The source code of <code>LogLikelihood</code> can be found <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/arima/likelihood.rb">here</a></p>
+<p>The source code of <code>LogLikelihood</code> can be found <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/lib/statsample-timeseries/arima/likelihood.rb">here</a></p>
 
-<p>The <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/test/test_arima_ks.rb">tests</a> for both passes all the case.  <br/>
-In between, we have covered the detailed documentation of pretty much everything in bio-statsample-timeseries.</p>
+<p>The <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/test/test_arima_ks.rb">tests</a> for both passes all the case.  <br/>
+In between, we have covered the detailed documentation of pretty much everything in statsample-timeseries.</p>
 
-<p>With that, we have also bumped our version. Go, <a href="http://rubygems.org/gems/bio-statsample-timeseries"><code>gem install bio-statsample-timeseries</code></a></p>
+<p>With that, we have also bumped our version. Go, <a href="http://rubygems.org/gems/statsample-timeseries"><code>gem install statsample-timeseries</code></a></p>
 
 <p>Cheers, <br/>
 Ankur Goel</p>
@@ -233,6 +233,8 @@ Ankur Goel</p>
         <a class="basic-alignment left" href="/blog/2013/09/01/utility-functions-and-documentation/" title="Previous Post: Utility functions and Documentation">&laquo; Utility functions and Documentation</a>
       
       
+        <a class="basic-alignment right" href="/blog/2013/09/25/generalized-linear-models-and-refactoring/" title="Next Post: Generalized Linear Models and refactoring">Generalized Linear Models and refactoring &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -246,6 +248,14 @@ Ankur Goel</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/10/16/statistics-with-ruby-timeseries-and-glm/">Statistics with Ruby - TimeSeries and GLM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/25/generalized-linear-models-and-refactoring/">Generalized Linear Models and refactoring</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/09/14/kalman-filter/">Kalman filter, Log Likelihood and Minimization</a>
       </li>
     
@@ -255,14 +265,6 @@ Ankur Goel</p>
     
       <li class="post">
         <a href="/blog/2013/08/20/kalman-and-cholesky-decomposition/">Kalman and Cholesky decomposition</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/06/bio-statsample-timeseries-deliverables/">bio-statsample-timeseries Deliverables</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/04/levinson-durbin-and-autocovariance/">Levinson-Durbin and Autocovariance</a>
       </li>
     
   </ul>
@@ -308,7 +310,7 @@ Ankur Goel</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Ankur Goel -
+  Copyright &copy; 2014 - Ankur Goel -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

@@ -108,13 +108,13 @@ To test the correctness of estimations by our simulations, we employ <em>acf</em
 <p>AR(1) process is the autoregressive simulation with order p = 1, i.e, with one value of phi.<br/>
 Ideal AR(p) process is represented by: <br/>
 <img src="http://upload.wikimedia.org/math/f/0/6/f06ba0e2d8668944406852d7f72ac2f1.png" alt="Courtesy: Wikipedia" /> <br/>
-To simulate this, install <a href="http://github.com/AnkurGel/bioruby-statsample-timeseries"><code>bio-statsample-timeseries</code></a> from here.</p>
+To simulate this, install <a href="http://github.com/AnkurGel/statsample-timeseries"><code>statsample-timeseries</code></a> from here.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;bio-statsample-timeseries&#39;</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;statsample-timeseries&#39;</span>
 </span><span class='line'><span class="kp">include</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:ARIMA</span>
 </span><span class='line'><span class="n">series</span> <span class="o">=</span> <span class="no">ARIMA</span><span class="o">.</span><span class="n">new</span>
 </span><span class='line'><span class="n">ar_1</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">ar_sim</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">9</span><span class="o">]</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -207,7 +207,7 @@ To simulate this, use <code>ma_sim</code> method from <code>Statsample::ARIMA::A
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;bio-statsample-timeseries&#39;</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;statsample-timeseries&#39;</span>
 </span><span class='line'><span class="kp">include</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:ARIMA</span>
 </span><span class='line'><span class="n">series</span> <span class="o">=</span> <span class="no">ARIMA</span><span class="o">.</span><span class="n">new</span>
 </span><span class='line'><span class="n">ma_1</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">ma_sim</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">9</span><span class="o">]</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -311,6 +311,14 @@ For <code>ARMA(1, 1)</code> process, here are the comparisons of the visualizati
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/10/16/statistics-with-ruby-timeseries-and-glm/">Statistics with Ruby - TimeSeries and GLM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/25/generalized-linear-models-and-refactoring/">Generalized Linear Models and refactoring</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/09/14/kalman-filter/">Kalman filter, Log Likelihood and Minimization</a>
       </li>
     
@@ -320,14 +328,6 @@ For <code>ARMA(1, 1)</code> process, here are the comparisons of the visualizati
     
       <li class="post">
         <a href="/blog/2013/08/20/kalman-and-cholesky-decomposition/">Kalman and Cholesky decomposition</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/06/bio-statsample-timeseries-deliverables/">bio-statsample-timeseries Deliverables</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/04/levinson-durbin-and-autocovariance/">Levinson-Durbin and Autocovariance</a>
       </li>
     
   </ul>
@@ -373,7 +373,7 @@ For <code>ARMA(1, 1)</code> process, here are the comparisons of the visualizati
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Ankur Goel -
+  Copyright &copy; 2014 - Ankur Goel -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

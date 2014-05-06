@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Ankur Goel</title>
+  <title>Statistics with Ruby - TimeSeries and GLM - Ankur Goel</title>
   <meta name="author" content="Ankur Goel">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://AnkurGel.github.io">
+  <link rel="canonical" href="http://AnkurGel.github.io/blog/2013/10/16/statistics-with-ruby-timeseries-and-glm">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Ankur Goel" type="application/atom+xml">
@@ -63,15 +63,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/10/16/statistics-with-ruby-timeseries-and-glm/">Statistics With Ruby - TimeSeries and GLM</a></h1>
+      <h1 class="entry-title">Statistics With Ruby - TimeSeries and GLM</h1>
     
     
       <p class="meta">
@@ -94,7 +91,7 @@
   </header>
 
 
-  <div class="entry-content"><h2>Introduction:</h2>
+<div class="entry-content"><h2>Introduction:</h2>
 
 <p><strong>Statsample</strong> is a basic and advance statistics suite on Ruby. It is majorly supported by many Ruby 1.8.7, 1.9.1, 1.9.2, 1.9.3 and 2.0.0.</p>
 
@@ -231,58 +228,16 @@ Stay tuned and Enjoy. :)</p>
 
 <p>- Ankur Goel</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/09/25/generalized-linear-models-and-refactoring/">Generalized Linear Models and Refactoring</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">Ankur Goel</span></span>
 
-<time datetime="2013-09-25T22:42:00+05:30" pubdate data-updated="true">Sep 25<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content">
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/09/14/kalman-filter/">Kalman Filter, Log Likelihood and Minimization</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -294,128 +249,32 @@ Stay tuned and Enjoy. :)</p>
   
 
 
-<time datetime="2013-09-14T23:54:00+05:30" pubdate data-updated="true">Sep 14<span>th</span>, 2013</time>
-        
-      </p>
+<time datetime="2013-10-16T08:47:00+05:30" pubdate data-updated="true">Oct 16<span>th</span>, 2013</time>
+      
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>Last two weeks have been a rollercoaster ride. <br/>
-We have wrote the extensive modules for <strong>KalmanFilter</strong>(<code>Statsample::TimeSeries::Arima::KalmanFilter</code>) and <strong>LogLikelihood</strong>(<code>Statsample::TimeSeries::Arima::KF::LogLikelihood</code>).</p>
-
-<p>I am way too grateful to Claudio for his uber-awesome support and guidance. While implementing log-likelihood, I understood why he asked me to go through <code>GSL</code> <a href="http://rb-gsl.rubyforge.org/files/rdoc/multimin_rdoc.html">minimization</a> at the first place. Thanks! :)</p>
-
-<p><em>KalmanFilter</em> enables us to find the ARIMA(p, d, q) of series where,</p>
-
-<ul>
-<li><strong>p</strong> = Order of Autoregressive part.</li>
-<li><strong>d</strong> = Integerated part.</li>
-<li><strong>q</strong> = Order of Moving Average part.</li>
-</ul>
-
-
-<p>The filter finds the autoregressive and moving average coefficients for the given series and orders. <br/>
-In the previous phase, we were working on the simulations of ARIMA model and manually provided the <code>phi</code> and <code>theta</code> coefficients to the simulator.<br/>
-The KalmanFilter removes that dependency, by <em>simplex</em> algorithm minimizing approach on the log likelihood of the series, it successfully finds the ARIMA of a given series.</p>
-
-<p><strong>Use Case:</strong></p>
-
-<figure class='code'><figcaption><span>KalmanFilter example</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#Make a timeseries. Below is random series</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;statsample-timeseries&#39;</span>
-</span><span class='line'><span class="n">ts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">200</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nb">rand</span> <span class="p">}</span><span class="o">.</span><span class="n">to_ts</span>
-</span><span class='line'>
-</span><span class='line'><span class="kp">include</span> <span class="ss">Statsample</span><span class="p">:</span><span class="ss">:TimeSeries</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">#generate kalman filter object for ARIMA(2, 0, 1)</span>
-</span><span class='line'><span class="n">kf</span> <span class="o">=</span> <span class="no">ARIMA</span><span class="o">.</span><span class="n">ks</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">#AR Coeffs:</span>
-</span><span class='line'><span class="n">kf</span><span class="o">.</span><span class="n">ar</span>
-</span><span class='line'><span class="c1">#=&gt; [0.26666666666666666, 0.3666666666666667]</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">#kf.ma</span>
-</span><span class='line'><span class="c1">#=&gt; =&gt; [0.13333333333333336]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The source code of <code>KalmanFilter</code> can be found <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/lib/statsample-timeseries/arima/kalman.rb">here</a>.</p>
-
-<p>Now, as name depicts, <code>LogLikelihood</code> generates log-likelihood and few other attributes of the series.  <br/>
-With the <code>LogLikelihood</code> class, we are generating many internal matrices(we even added few utility functions to make computation easier <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/lib/statsample-timeseries/utility.rb#L23">here</a>). With this class, on given coefficients, order and series, we are able to calculate sigma, log-likelihood and AIC(Akaike Information Criterion) of the series.</p>
-
-<p>LogLikelihood is the important class, since this is the function which is repeatedly minimized in KalmanFilter, which in turn generates the estimated parameters for ARIMA.</p>
-
-<p><strong>Use Case:</strong></p>
-
-<figure class='code'><figcaption><span>LogLikelihood example</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#continuing with example above</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">l</span> <span class="o">=</span> <span class="ss">Arima</span><span class="p">:</span><span class="ss">:KF</span><span class="o">::</span><span class="no">LogLikelihood</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">kf</span><span class="o">.</span><span class="n">ar</span><span class="o">+</span><span class="n">kf</span><span class="o">.</span><span class="n">ma</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</span><span class='line'><span class="c1">#  =&gt; LogLikelihood(p = 2, q = 1) on params: [0.26666666666666666, 0.3666666666666667, 0.13333333333333336]</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">l</span><span class="o">.</span><span class="n">log_likelihood</span>
-</span><span class='line'><span class="c1">#  =&gt; -81.50161474755537</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">l</span><span class="o">.</span><span class="n">sigma</span>
-</span><span class='line'><span class="c1">#  =&gt; 0.13135393469540402</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">l</span><span class="o">.</span><span class="n">aic</span>
-</span><span class='line'><span class="c1">#  =&gt; 171.00322949511073</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The source code of <code>LogLikelihood</code> can be found <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/lib/statsample-timeseries/arima/likelihood.rb">here</a></p>
-
-<p>The <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/test/test_arima_ks.rb">tests</a> for both passes all the case.  <br/>
-In between, we have covered the detailed documentation of pretty much everything in statsample-timeseries.</p>
-
-<p>With that, we have also bumped our version. Go, <a href="http://rubygems.org/gems/statsample-timeseries"><code>gem install statsample-timeseries</code></a></p>
-
-<p>Cheers, <br/>
-Ankur Goel</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://AnkurGel.github.io/blog/2013/10/16/statistics-with-ruby-timeseries-and-glm/" data-via="ankurgel" data-counturl="http://AnkurGel.github.io/blog/2013/10/16/statistics-with-ruby-timeseries-and-glm/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/09/25/generalized-linear-models-and-refactoring/" title="Previous Post: Generalized Linear Models and refactoring">&laquo; Generalized Linear Models and refactoring</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
+
 <aside class="sidebar">
   
     <section>
@@ -448,7 +307,7 @@ Ankur Goel</p>
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/ankurgel">@ankurgel</a> on GitHub
@@ -480,6 +339,7 @@ Ankur Goel</p>
 
   
 </aside>
+
 
     </div>
   </div>

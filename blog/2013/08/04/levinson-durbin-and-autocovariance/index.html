@@ -97,7 +97,7 @@
 
 <p>Autocovariance of series is represented by summation of summation of product of series with series at lag <code>k</code>. That is, summation of <code>(x_i * x_{i+lag})</code>. It is also directly related with <code>acf</code> of series as <code>acf(k) = acvf(h) / acvf(0)</code>. It&#8217;s code can now be found in <code>Statsample::TimeSeries</code>&#8217;s <code>acvf</code> method.</p>
 
-<p>Now, with the help of autocovariance series, our <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/timeseries/pacf.rb#L16"><code>levinson_durbin</code></a> function recursively computes the following parameters:</p>
+<p>Now, with the help of autocovariance series, our <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/lib/statsample-timeseries/timeseries/pacf.rb#L16"><code>levinson_durbin</code></a> function recursively computes the following parameters:</p>
 
 <ul>
 <li>sigma_v : estimation of error variance</li>
@@ -148,7 +148,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Implementation can be found <a href="https://github.com/AnkurGel/bioruby-statsample-timeseries/blob/master/lib/bio-statsample-timeseries/timeseries/pacf.rb#L16">here</a>.</p>
+<p>Implementation can be found <a href="https://github.com/AnkurGel/statsample-timeseries/blob/master/lib/statsample-timeseries/timeseries/pacf.rb#L16">here</a>.</p>
 
 <p>Now, in this week, I will integrate this in AR modelling and perform some tests to verify the estimation. And will soon start with next estimation method :)</p>
 
@@ -211,6 +211,14 @@ Ankur Goel</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/10/16/statistics-with-ruby-timeseries-and-glm/">Statistics with Ruby - TimeSeries and GLM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/25/generalized-linear-models-and-refactoring/">Generalized Linear Models and refactoring</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/09/14/kalman-filter/">Kalman filter, Log Likelihood and Minimization</a>
       </li>
     
@@ -220,14 +228,6 @@ Ankur Goel</p>
     
       <li class="post">
         <a href="/blog/2013/08/20/kalman-and-cholesky-decomposition/">Kalman and Cholesky decomposition</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/06/bio-statsample-timeseries-deliverables/">bio-statsample-timeseries Deliverables</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/04/levinson-durbin-and-autocovariance/">Levinson-Durbin and Autocovariance</a>
       </li>
     
   </ul>
@@ -273,7 +273,7 @@ Ankur Goel</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Ankur Goel -
+  Copyright &copy; 2014 - Ankur Goel -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
